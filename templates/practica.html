@@ -1,0 +1,652 @@
+{% extends "base.html" %}
+
+{% block title %}Práctica Personalizada - Comunicación Asertiva{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header de la práctica -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mx-auto text-center" data-aos="fade-down">
+            <h1 class="display-5 fw-bold mb-3">
+                <i class="bi bi-lightning-charge-fill text-warning me-3"></i>
+                Práctica Personalizada
+            </h1>
+            <p class="lead text-muted">
+                Ejercicios recomendados según tu nivel y rendimiento
+            </p>
+        </div>
+    </div>
+
+    <!-- Barra de progreso de la sesión -->
+    <div class="row mb-4" data-aos="fade-up">
+        <div class="col-lg-10 mx-auto">
+            <div class="card shadow-sm border-0 bg-primary bg-opacity-10">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-bar-chart-fill text-primary me-2"></i>
+                                <h6 class="fw-bold mb-0">Progreso de la sesión</h6>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                <div id="sessionProgress" class="progress-bar bg-success" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-around">
+                                <div class="text-center">
+                                    <small class="text-muted d-block">Completados</small>
+                                    <span id="completedCount" class="fw-bold fs-5">0</span>
+                                    <small>/{{ exercises|length }}</small>
+                                </div>
+                                <div class="text-center">
+                                    <small class="text-muted d-block">Correctos</small>
+                                    <span id="correctCount" class="fw-bold fs-5 text-success">0</span>
+                                </div>
+                                <div class="text-center">
+                                    <small class="text-muted d-block">Puntos</small>
+                                    <span id="pointsEarned" class="fw-bold fs-5 text-primary">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Área de ejercicio actual -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Tarjeta del ejercicio -->
+            <div id="exerciseCard" class="card shadow-lg border-0 mb-4" data-aos="fade-up">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span id="exerciseType" class="badge bg-primary mb-2">Cargando...</span>
+                            <h4 id="exerciseTitle" class="fw-bold mb-0">Ejercicio 1 de {{ exercises|length }}</h4>
+                        </div>
+                        <div>
+                            <span id="exerciseDifficulty" class="badge bg-info">Dificultad media</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Frase del ejercicio -->
+                    <div class="exercise-phrase bg-light p-4 rounded-4 mb-4">
+                        <p id="exercisePhrase" class="lead fw-bold mb-0 text-center">Cargando ejercicio...</p>
+                    </div>
+                    
+                    <!-- Área de respuesta según tipo -->
+                    <div id="responseArea" class="mb-4">
+                        <!-- Se llena dinámicamente con JavaScript -->
+                    </div>
+                    
+                    <!-- Feedback y acciones -->
+                    <div id="feedbackArea" class="mb-4" style="display: none;">
+                        <!-- Se llena dinámicamente con JavaScript -->
+                    </div>
+                    
+                    <!-- Botones de acción -->
+                    <div class="d-flex justify-content-between">
+                        <button id="checkBtn" class="btn btn-primary btn-lg px-5" onclick="checkAnswer()">
+                            <i class="bi bi-check-circle me-2"></i>Verificar
+                        </button>
+                        <button id="nextBtn" class="btn btn-outline-primary btn-lg px-5" onclick="nextExercise()" style="display: none;">
+                            <i class="bi bi-arrow-right me-2"></i>Siguiente
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta de ayuda y consejos -->
+            <div class="card shadow-sm border-0 bg-light" data-aos="fade-up">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-lightbulb-fill text-warning fs-3 me-3"></i>
+                        <div>
+                            <h6 class="fw-bold mb-2">Consejo para esta práctica</h6>
+                            <p id="tipText" class="text-muted mb-0">
+                                Tómate tu tiempo para pensar la respuesta. No hay límite de tiempo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de resumen de sesión -->
+<div class="modal fade" id="sessionSummaryModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-trophy-fill me-2"></i>
+                    ¡Práctica completada!
+                </h5>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <div class="mb-4">
+                    <div class="display-1 text-warning mb-3">🏆</div>
+                    <h3 class="fw-bold mb-2">¡Excelente trabajo!</h3>
+                    <p class="text-muted">Has completado la sesión de práctica</p>
+                </div>
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-4">
+                        <div class="bg-light rounded-3 p-3">
+                            <div class="small text-muted">Ejercicios</div>
+                            <div class="fw-bold fs-4" id="summaryTotal">0</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="bg-light rounded-3 p-3">
+                            <div class="small text-muted">Correctos</div>
+                            <div class="fw-bold fs-4 text-success" id="summaryCorrect">0</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="bg-light rounded-3 p-3">
+                            <div class="small text-muted">Puntos</div>
+                            <div class="fw-bold fs-4 text-primary" id="summaryPoints">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3">Precisión</h6>
+                    <div class="progress" style="height: 20px;">
+                        <div id="summaryAccuracy" class="progress-bar bg-success" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <!-- Nuevos logros desbloqueados -->
+                <div id="newAchievements" class="mb-4" style="display: none;">
+                    <h6 class="fw-bold mb-3 text-warning">
+                        <i class="bi bi-trophy-fill me-2"></i>
+                        ¡Nuevos logros!
+                    </h6>
+                    <div id="achievementsList" class="d-flex justify-content-center gap-2 flex-wrap">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+                
+                <!-- Estadísticas de tiempo -->
+                <div class="small text-muted mb-4">
+                    <i class="bi bi-clock me-1"></i>
+                    Tiempo total: <span id="totalTime">0</span>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary px-5" onclick="finishPractice()">
+                    <i class="bi bi-check-circle me-2"></i>Finalizar
+                </button>
+                <button type="button" class="btn btn-outline-primary px-5" onclick="restartPractice()">
+                    <i class="bi bi-arrow-repeat me-2"></i>Nueva práctica
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de pausa -->
+<div class="modal fade" id="pauseModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-4">
+                <i class="bi bi-pause-circle display-1 text-primary mb-3"></i>
+                <h4 class="fw-bold mb-3">Práctica en pausa</h4>
+                <p class="text-muted mb-4">Tómate el tiempo que necesites</p>
+                <button class="btn btn-primary px-5" data-bs-dismiss="modal">
+                    <i class="bi bi-play-fill me-2"></i>Continuar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.exercise-phrase {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid var(--primary-color);
+    font-size: 1.25rem;
+}
+
+#responseArea textarea, #responseArea input {
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+#responseArea textarea:focus, #responseArea input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.timer-badge {
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.correct-animation {
+    animation: pulse 0.5s ease;
+}
+
+.incorrect-animation {
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+</style>
+
+<script>
+// Datos de los ejercicios
+const exercises = {{ exercises|tojson }};
+let currentIndex = 0;
+let completed = 0;
+let correct = 0;
+let points = 0;
+let sessionStartTime = Date.now();
+let exerciseStartTime = Date.now();
+let answers = [];
+
+// Elementos DOM
+const exercisePhrase = document.getElementById('exercisePhrase');
+const exerciseType = document.getElementById('exerciseType');
+const exerciseDifficulty = document.getElementById('exerciseDifficulty');
+const exerciseTitle = document.getElementById('exerciseTitle');
+const responseArea = document.getElementById('responseArea');
+const feedbackArea = document.getElementById('feedbackArea');
+const checkBtn = document.getElementById('checkBtn');
+const nextBtn = document.getElementById('nextBtn');
+const tipText = document.getElementById('tipText');
+
+// Inicializar primera práctica
+document.addEventListener('DOMContentLoaded', function() {
+    showExercise(0);
+    updateProgress();
+    startTimer();
+});
+
+// Mostrar ejercicio
+function showExercise(index) {
+    const exercise = exercises[index];
+    
+    // Actualizar título
+    exerciseTitle.textContent = `Ejercicio ${index + 1} de ${exercises.length}`;
+    exercisePhrase.textContent = exercise.frase;
+    
+    // Actualizar tipo y dificultad
+    const typeNames = {
+        'transformacion': { name: 'Transformación', color: 'primary' },
+        'completar': { name: 'Completar', color: 'success' },
+        'identificar': { name: 'Identificación', color: 'info' }
+    };
+    
+    const typeInfo = typeNames[exercise.tipo] || { name: exercise.tipo, color: 'secondary' };
+    exerciseType.innerHTML = `<i class="bi bi-tag me-1"></i>${typeInfo.name}`;
+    exerciseType.className = `badge bg-${typeInfo.color} mb-2`;
+    
+    // Dificultad
+    const difficultyColors = {
+        'facil': 'success',
+        'media': 'warning',
+        'dificil': 'danger'
+    };
+    exerciseDifficulty.innerHTML = `<i class="bi bi-bar-chart me-1"></i>${exercise.dificultad || 'media'}`;
+    exerciseDifficulty.className = `badge bg-${difficultyColors[exercise.dificultad] || 'info'}`;
+    
+    // Crear área de respuesta según tipo
+    createResponseArea(exercise.tipo);
+    
+    // Actualizar consejo
+    updateTip(exercise.tipo);
+    
+    // Resetear feedback
+    feedbackArea.style.display = 'none';
+    checkBtn.style.display = 'block';
+    nextBtn.style.display = 'none';
+    
+    // Resetear tiempo del ejercicio
+    exerciseStartTime = Date.now();
+}
+
+// Crear área de respuesta según tipo
+function createResponseArea(type) {
+    let html = '';
+    
+    switch(type) {
+        case 'transformacion':
+            html = `
+                <label class="form-label fw-bold mb-2">
+                    <i class="bi bi-pencil me-2"></i>Tu versión amable:
+                </label>
+                <textarea class="form-control form-control-lg" id="userAnswer" rows="4" 
+                          placeholder="Escribe aquí tu versión asertiva de la frase..."></textarea>
+                <div class="form-text mt-2">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Transforma la frase manteniendo el significado pero con un tono respetuoso.
+                </div>
+            `;
+            break;
+            
+        case 'completar':
+            html = `
+                <label class="form-label fw-bold mb-2">
+                    <i class="bi bi-pencil me-2"></i>Completa la frase:
+                </label>
+                <input type="text" class="form-control form-control-lg" id="userAnswer" 
+                       placeholder="Escribe la palabra o frase que falta...">
+                <div class="form-text mt-2">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Completa de manera respetuosa y asertiva.
+                </div>
+            `;
+            break;
+            
+        case 'identificar':
+            html = `
+                <label class="form-label fw-bold mb-2">
+                    <i class="bi bi-search me-2"></i>¿Qué elemento problemático identificas?
+                </label>
+                <input type="text" class="form-control form-control-lg" id="userAnswer" 
+                       placeholder="Ej: tono, generalización, etiqueta...">
+                <div class="form-text mt-2">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Identifica el principal problema de comunicación en la frase.
+                </div>
+            `;
+            break;
+    }
+    
+    responseArea.innerHTML = html;
+}
+
+// Actualizar consejo según tipo
+function updateTip(type) {
+    const tips = {
+        'transformacion': 'Enfócate en el respeto y la colaboración. Usa "nosotros" en lugar de "tú".',
+        'completar': 'Piensa en palabras que muestren empatía y disposición a ayudar.',
+        'identificar': 'Busca generalizaciones, etiquetas, tonos acusatorios o falta de empatía.'
+    };
+    tipText.textContent = tips[type] || 'Tómate tu tiempo para pensar la respuesta.';
+}
+
+// Verificar respuesta
+function checkAnswer() {
+    const answer = document.getElementById('userAnswer').value.trim();
+    const exercise = exercises[currentIndex];
+    const timeSpent = Math.floor((Date.now() - exerciseStartTime) / 1000);
+    
+    if (!answer) {
+        alert('Por favor, escribe una respuesta antes de verificar.');
+        return;
+    }
+    
+    // Deshabilitar botón
+    checkBtn.disabled = true;
+    
+    // Enviar a verificar
+    fetch('/api/ejercicio/check', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            exercise_id: exercise.id,
+            answer: answer,
+            time_spent: timeSpent
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Actualizar contadores
+        completed++;
+        if (data.correct) correct++;
+        points += data.points;
+        
+        // Guardar respuesta
+        answers.push({
+            exercise_id: exercise.id,
+            correct: data.correct,
+            points: data.points,
+            stars: data.stars
+        });
+        
+        // Mostrar feedback
+        showFeedback(data, exercise);
+        
+        // Actualizar progreso
+        updateProgress();
+        
+        // Si es correcto, animación
+        if (data.correct) {
+            document.getElementById('exerciseCard').classList.add('correct-animation');
+            setTimeout(() => {
+                document.getElementById('exerciseCard').classList.remove('correct-animation');
+            }, 500);
+        } else {
+            document.getElementById('exerciseCard').classList.add('incorrect-animation');
+            setTimeout(() => {
+                document.getElementById('exerciseCard').classList.remove('incorrect-animation');
+            }, 500);
+        }
+        
+        // Verificar nuevos logros
+        if (data.new_achievements && data.new_achievements.length > 0) {
+            showAchievements(data.new_achievements);
+        }
+    });
+}
+
+// Mostrar feedback
+function showFeedback(data, exercise) {
+    const feedbackHtml = `
+        <div class="alert ${data.correct ? 'alert-success' : 'alert-warning'}">
+            <div class="d-flex align-items-start">
+                <i class="bi ${data.correct ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'} me-3 fs-4"></i>
+                <div class="flex-grow-1">
+                    <h5 class="alert-heading fw-bold mb-2">
+                        ${data.correct ? '¡Correcto!' : 'Respuesta mejorable'}
+                    </h5>
+                    <p class="mb-2">${data.explicacion}</p>
+                    ${!data.correct ? `
+                        <div class="mt-2 p-2 bg-white bg-opacity-50 rounded">
+                            <strong>Sugerencia:</strong> ${exercise.respuesta}
+                        </div>
+                    ` : ''}
+                    <div class="mt-3 d-flex gap-3">
+                        <span class="badge bg-primary">
+                            <i class="bi bi-star-fill me-1"></i>+${data.points} puntos
+                        </span>
+                        <span class="badge bg-warning text-dark">
+                            <i class="bi bi-star-fill me-1"></i>${'★'.repeat(data.stars)}${'☆'.repeat(5-data.stars)}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    feedbackArea.innerHTML = feedbackHtml;
+    feedbackArea.style.display = 'block';
+    
+    // Ocultar botón de verificar, mostrar siguiente
+    checkBtn.style.display = 'none';
+    
+    if (completed < exercises.length) {
+        nextBtn.style.display = 'block';
+    } else {
+        // Mostrar resumen final
+        nextBtn.style.display = 'none';
+        setTimeout(showSummary, 1000);
+    }
+}
+
+// Siguiente ejercicio
+function nextExercise() {
+    currentIndex++;
+    showExercise(currentIndex);
+}
+
+// Actualizar barra de progreso
+function updateProgress() {
+    const progress = (completed / exercises.length) * 100;
+    document.getElementById('sessionProgress').style.width = progress + '%';
+    document.getElementById('completedCount').textContent = completed;
+    document.getElementById('correctCount').textContent = correct;
+    document.getElementById('pointsEarned').textContent = points;
+}
+
+// Mostrar resumen de sesión
+function showSummary() {
+    const totalTime = Math.floor((Date.now() - sessionStartTime) / 1000);
+    const accuracy = (correct / exercises.length) * 100;
+    
+    document.getElementById('summaryTotal').textContent = exercises.length;
+    document.getElementById('summaryCorrect').textContent = correct;
+    document.getElementById('summaryPoints').textContent = points;
+    document.getElementById('summaryAccuracy').style.width = accuracy + '%';
+    document.getElementById('totalTime').textContent = formatTime(totalTime);
+    
+    const modal = new bootstrap.Modal(document.getElementById('sessionSummaryModal'));
+    modal.show();
+    
+    // Finalizar sesión en el servidor
+    fetch(`/api/practica/finalizar/{{ session_id }}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            completed: exercises.length,
+            correct: correct,
+            points: points,
+            types: exercises.map(e => e.tipo)
+        })
+    });
+}
+
+// Mostrar nuevos logros
+function showAchievements(newAchievements) {
+    const achievementsList = document.getElementById('achievementsList');
+    let html = '';
+    
+    newAchievements.forEach(achievement => {
+        html += `
+            <span class="badge bg-warning text-dark p-2">
+                <i class="bi bi-trophy-fill me-1"></i>${achievement.name}
+            </span>
+        `;
+    });
+    
+    achievementsList.innerHTML = html;
+    document.getElementById('newAchievements').style.display = 'block';
+}
+
+// Formatear tiempo
+function formatTime(seconds) {
+    if (seconds < 60) return `${seconds} segundos`;
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes} minutos ${remainingSeconds} segundos`;
+}
+
+// Finalizar práctica
+function finishPractice() {
+    window.location.href = "{{ url_for('progreso') }}";
+}
+
+// Reiniciar práctica
+function restartPractice() {
+    window.location.href = "{{ url_for('practica') }}";
+}
+
+// Timer
+function startTimer() {
+    const timer = setInterval(() => {
+        if (completed < exercises.length) {
+            // Actualizar timer si es necesario
+        } else {
+            clearInterval(timer);
+        }
+    }, 1000);
+}
+
+// Pausar práctica (con atajo de teclado)
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && completed < exercises.length) {
+        const modal = new bootstrap.Modal(document.getElementById('pauseModal'));
+        modal.show();
+    }
+});
+
+// Atajo de teclado para verificar (Ctrl+Enter)
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 'Enter' && checkBtn.style.display !== 'none') {
+        e.preventDefault();
+        checkAnswer();
+    }
+});
+
+// Autoguardado cada 30 segundos
+setInterval(() => {
+    if (completed < exercises.length && answers.length > 0) {
+        localStorage.setItem('practice_backup', JSON.stringify({
+            currentIndex,
+            completed,
+            correct,
+            points,
+            answers,
+            timestamp: Date.now()
+        }));
+    }
+}, 30000);
+
+// Recuperar sesión anterior (si existe)
+window.addEventListener('load', function() {
+    const backup = localStorage.getItem('practice_backup');
+    if (backup) {
+        const data = JSON.parse(backup);
+        const timeSinceBackup = Date.now() - data.timestamp;
+        
+        // Si el backup tiene menos de 1 hora
+        if (timeSinceBackup < 3600000 && confirm('¿Quieres continuar con tu sesión anterior?')) {
+            currentIndex = data.currentIndex;
+            completed = data.completed;
+            correct = data.correct;
+            points = data.points;
+            answers = data.answers;
+            
+            showExercise(currentIndex);
+            updateProgress();
+        }
+        localStorage.removeItem('practice_backup');
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,527 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión - Comunicación Asertiva{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <!-- Tarjeta principal -->
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden" data-aos="fade-up">
+                <div class="row g-0">
+                    <!-- Lado izquierdo con gradiente (solo visible en desktop) -->
+                    <div class="col-md-5 d-none d-md-block bg-primary bg-gradient">
+                        <div class="d-flex flex-column justify-content-center h-100 p-4 text-white">
+                            <div class="text-center mb-4">
+                                <i class="bi bi-chat-quote-fill display-1"></i>
+                            </div>
+                            <h3 class="fw-bold mb-3">¡Bienvenido de nuevo!</h3>
+                            <p class="mb-4">
+                                Accede a tu cuenta para continuar practicando y mejorando 
+                                tu comunicación asertiva.
+                            </p>
+                            <div class="mt-auto">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    <span>100+ ejercicios interactivos</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    <span>50 flashcards de estudio</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    <span>Sistema de logros y recompensas</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lado derecho con formulario -->
+                    <div class="col-md-7">
+                        <div class="card-body p-4 p-lg-5">
+                            <!-- Header móvil -->
+                            <div class="text-center mb-4 d-md-none">
+                                <i class="bi bi-chat-quote-fill display-4 text-primary"></i>
+                                <h3 class="fw-bold mt-3">Iniciar Sesión</h3>
+                            </div>
+                            
+                            <div class="d-none d-md-block mb-4">
+                                <h4 class="fw-bold">Iniciar Sesión</h4>
+                                <p class="text-muted">Ingresa tus credenciales para acceder</p>
+                            </div>
+                            
+                            <!-- Formulario de login -->
+                            <form method="POST" action="{{ url_for('login') }}" id="loginForm">
+                                <div class="mb-4">
+                                    <label for="username" class="form-label fw-semibold">
+                                        <i class="bi bi-person me-2"></i>Usuario
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0">
+                                            <i class="bi bi-person text-primary"></i>
+                                        </span>
+                                        <input type="text" 
+                                               class="form-control form-control-lg bg-light border-0" 
+                                               id="username" 
+                                               name="username" 
+                                               placeholder="Ingresa tu usuario"
+                                               required 
+                                               autofocus>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="password" class="form-label fw-semibold">
+                                        <i class="bi bi-lock me-2"></i>Contraseña
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-0">
+                                            <i class="bi bi-lock text-primary"></i>
+                                        </span>
+                                        <input type="password" 
+                                               class="form-control form-control-lg bg-light border-0" 
+                                               id="password" 
+                                               name="password" 
+                                               placeholder="Ingresa tu contraseña"
+                                               required>
+                                        <button class="btn btn-light border-0" 
+                                                type="button" 
+                                                onclick="togglePassword()">
+                                            <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                                        <label class="form-check-label" for="remember">
+                                            Recordarme
+                                        </label>
+                                    </div>
+                                    <a href="#" class="text-decoration-none small" onclick="showResetMessage()">
+                                        ¿Olvidaste tu contraseña?
+                                    </a>
+                                </div>
+                                
+                                <!-- Botón de inicio de sesión -->
+                                <button type="submit" class="btn btn-primary btn-lg w-100 mb-4" id="loginBtn">
+                                    <span class="spinner-border spinner-border-sm d-none" id="loginSpinner" role="status"></span>
+                                    <span id="loginText">Iniciar sesión</span>
+                                </button>
+                                
+                                <!-- Separador -->
+                                <div class="position-relative my-4">
+                                    <hr>
+                                    <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">
+                                        o continúa con
+                                    </span>
+                                </div>
+                                
+                                <!-- Botones de redes sociales (simulados) -->
+                                <div class="row g-2 mb-4">
+                                    <div class="col-6">
+                                        <button class="btn btn-outline-secondary w-100" onclick="showSocialMessage('Google')">
+                                            <i class="bi bi-google me-2"></i>Google
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-outline-secondary w-100" onclick="showSocialMessage('GitHub')">
+                                            <i class="bi bi-github me-2"></i>GitHub
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Enlace a registro -->
+                                <div class="text-center">
+                                    <p class="text-muted mb-0">
+                                        ¿No tienes una cuenta? 
+                                        <a href="{{ url_for('registro') }}" class="text-primary fw-bold text-decoration-none">
+                                            Regístrate gratis
+                                        </a>
+                                    </p>
+                                </div>
+                            </form>
+                            
+                            <!-- Mensaje de demo -->
+                            <div class="alert alert-info mt-4 mb-0">
+                                <div class="d-flex">
+                                    <i class="bi bi-info-circle-fill me-3 fs-4"></i>
+                                    <div>
+                                        <strong>Demo:</strong> Puedes usar "demo" como usuario y contraseña para probar, 
+                                        o <a href="{{ url_for('registro') }}" class="alert-link">crear tu propia cuenta</a>.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tarjetas de beneficios (móvil) -->
+            <div class="row mt-4 d-md-none">
+                <div class="col-4 text-center">
+                    <div class="card border-0 bg-light">
+                        <div class="card-body py-3">
+                            <i class="bi bi-pencil-square text-primary fs-3"></i>
+                            <small class="d-block">100+ ejercicios</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 text-center">
+                    <div class="card border-0 bg-light">
+                        <div class="card-body py-3">
+                            <i class="bi bi-card-list text-primary fs-3"></i>
+                            <small class="d-block">50 flashcards</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 text-center">
+                    <div class="card border-0 bg-light">
+                        <div class="card-body py-3">
+                            <i class="bi bi-trophy text-primary fs-3"></i>
+                            <small class="d-block">Logros</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Citas motivacionales -->
+            <div class="text-center mt-5" data-aos="fade-up">
+                <div class="card border-0 bg-light">
+                    <div class="card-body py-4">
+                        <i class="bi bi-quote display-1 text-primary opacity-50"></i>
+                        <p class="lead fst-italic mb-2">
+                            "La comunicación asertiva es el arte de expresar quién eres 
+                            sin dejar de respetar quiénes son los demás."
+                        </p>
+                        <footer class="blockquote-footer mt-2">
+                            Virginia Satir, terapeuta familiar
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para recuperación de contraseña (simulado) -->
+<div class="modal fade" id="resetModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-key me-2"></i>
+                    Recuperar contraseña
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Esta es una funcionalidad de demostración. En una versión completa, recibirías un correo para restablecer tu contraseña.</p>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Por ahora, puedes usar el usuario "demo" con cualquier contraseña para probar.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos personalizados */
+.card {
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.input-group-text {
+    border-radius: 10px 0 0 10px !important;
+}
+
+.form-control {
+    border-radius: 0 10px 10px 0 !important;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    background-color: #ffffff !important;
+}
+
+.btn-outline-secondary {
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+    transform: translateY(-2px);
+}
+
+/* Animación para el botón de inicio de sesión */
+.btn-primary {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Efecto de onda en el botón */
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+.btn-primary:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(20, 20);
+        opacity: 0;
+    }
+}
+
+/* Animación de fade-in para el formulario */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Validación visual de campos */
+.form-control.is-valid {
+    border-left: 4px solid #2ecc71 !important;
+}
+
+.form-control.is-invalid {
+    border-left: 4px solid #e74c3c !important;
+}
+
+/* Tooltips personalizados */
+[data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+[data-tooltip]:before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+[data-tooltip]:hover:before {
+    opacity: 1;
+    visibility: visible;
+    bottom: 150%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.5rem !important;
+    }
+    
+    .display-4 {
+        font-size: 2.5rem;
+    }
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.spinner-border {
+    animation: spin 0.6s linear infinite;
+}
+</style>
+
+<script>
+// Mostrar/ocultar contraseña
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const icon = document.getElementById('togglePasswordIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
+
+// Mostrar mensaje de recuperación de contraseña
+function showResetMessage() {
+    const modal = new bootstrap.Modal(document.getElementById('resetModal'));
+    modal.show();
+}
+
+// Mostrar mensaje de redes sociales
+function showSocialMessage(provider) {
+    alert(`En una versión completa, podrías iniciar sesión con ${provider}. Por ahora, usa el formulario tradicional.`);
+}
+
+// Validación del formulario en tiempo real
+document.addEventListener('DOMContentLoaded', function() {
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginSpinner = document.getElementById('loginSpinner');
+    const loginText = document.getElementById('loginText');
+
+    // Validar usuario (mínimo 3 caracteres)
+    usernameInput.addEventListener('input', function() {
+        if (this.value.length >= 3) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else if (this.value.length > 0) {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        } else {
+            this.classList.remove('is-valid', 'is-invalid');
+        }
+    });
+
+    // Validar contraseña (mínimo 6 caracteres)
+    passwordInput.addEventListener('input', function() {
+        if (this.value.length >= 6) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else if (this.value.length > 0) {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        } else {
+            this.classList.remove('is-valid', 'is-invalid');
+        }
+    });
+
+    // Mostrar spinner al enviar
+    loginForm.addEventListener('submit', function(e) {
+        // Solo mostrar spinner si los campos son válidos
+        if (usernameInput.value.length >= 3 && passwordInput.value.length >= 6) {
+            loginBtn.disabled = true;
+            loginSpinner.classList.remove('d-none');
+            loginText.textContent = ' Iniciando sesión...';
+        }
+    });
+
+    // Auto-completar demo (opcional)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('demo') === 'true') {
+        usernameInput.value = 'demo';
+        passwordInput.value = 'demo123';
+        usernameInput.classList.add('is-valid');
+        passwordInput.classList.add('is-valid');
+    }
+});
+
+// Animación de carga para el botón de demo
+function setDemoCredentials() {
+    document.getElementById('username').value = 'demo';
+    document.getElementById('password').value = 'demo123';
+    
+    // Disparar eventos de input para activar validación
+    document.getElementById('username').dispatchEvent(new Event('input'));
+    document.getElementById('password').dispatchEvent(new Event('input'));
+}
+
+// Prevenir envío del formulario si hay campos inválidos
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    if (username.length < 3) {
+        e.preventDefault();
+        alert('El usuario debe tener al menos 3 caracteres');
+        document.getElementById('username').focus();
+    } else if (password.length < 6) {
+        e.preventDefault();
+        alert('La contraseña debe tener al menos 6 caracteres');
+        document.getElementById('password').focus();
+    }
+});
+
+// Efecto de escritura automática para demo (opcional)
+function typeWriter(element, text, speed) {
+    let i = 0;
+    element.value = '';
+    element.classList.add('is-valid');
+    
+    function type() {
+        if (i < text.length) {
+            element.value += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        }
+    }
+    
+    type();
+}
+
+// Si viene con parámetro autotype, hacer efecto máquina de escribir
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('autotype') === 'true') {
+    setTimeout(() => {
+        typeWriter(document.getElementById('username'), 'demo', 100);
+        setTimeout(() => {
+            typeWriter(document.getElementById('password'), 'demo123', 100);
+        }, 500);
+    }, 500);
+}
+</script>
+{% endblock %}

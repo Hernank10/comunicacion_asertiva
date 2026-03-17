@@ -1,0 +1,514 @@
+{% extends "base.html" %}
+
+{% block title %}Ranking - Comunicación Asertiva{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12 text-center" data-aos="fade-down">
+            <h1 class="display-5 fw-bold mb-3">
+                <i class="bi bi-bar-chart-steps text-primary me-3"></i>
+                Ranking de Aprendices
+            </h1>
+            <p class="lead text-muted">
+                Compara tu progreso con otros estudiantes de comunicación asertiva
+            </p>
+        </div>
+    </div>
+
+    <!-- Selector de categoría de ranking -->
+    <div class="row mb-4">
+        <div class="col-md-6 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <label class="form-label fw-bold mb-2">
+                        <i class="bi bi-funnel me-2"></i>Ordenar por
+                    </label>
+                    <div class="btn-group w-100" role="group">
+                        <a href="{{ url_for('ranking', by='score') }}" 
+                           class="btn {% if ranking_by == 'score' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            <i class="bi bi-trophy me-2"></i>Puntos
+                        </a>
+                        <a href="{{ url_for('ranking', by='streak') }}" 
+                           class="btn {% if ranking_by == 'streak' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            <i class="bi bi-fire me-2"></i>Racha
+                        </a>
+                        <a href="{{ url_for('ranking', by='stars') }}" 
+                           class="btn {% if ranking_by == 'stars' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            <i class="bi bi-star me-2"></i>Estrellas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Podio (top 3) -->
+    {% if top_users|length >= 3 %}
+    <div class="row mb-5 align-items-end">
+        <!-- Segundo lugar -->
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="podium-card silver text-center">
+                <div class="podium-position">2</div>
+                <div class="podium-avatar mb-3">
+                    <img src="{{ url_for('static', filename='avatars/' + top_users[1][1].avatar) }}" 
+                         alt="Avatar" class="rounded-circle border border-4 border-secondary"
+                         style="width: 100px; height: 100px; object-fit: cover;">
+                </div>
+                <h5 class="fw-bold mb-1">{{ top_users[1][1].username }}</h5>
+                <div class="podium-stats mb-2">
+                    {% if ranking_by == 'score' %}
+                    <span class="badge bg-primary">{{ top_users[1][1].total_score }} pts</span>
+                    {% elif ranking_by == 'streak' %}
+                    <span class="badge bg-danger">{{ top_users[1][1].current_streak }} días 🔥</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark">{{ top_users[1][1].total_stars }} ⭐</span>
+                    {% endif %}
+                </div>
+                <div class="podium-level">
+                    <small class="text-muted">Nivel {{ top_users[1][1].level }}</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Primer lugar -->
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="podium-card gold text-center">
+                <div class="podium-position">1</div>
+                <div class="crown mb-2">
+                    <i class="bi bi-crown-fill text-warning display-6"></i>
+                </div>
+                <div class="podium-avatar mb-3">
+                    <img src="{{ url_for('static', filename='avatars/' + top_users[0][1].avatar) }}" 
+                         alt="Avatar" class="rounded-circle border border-4 border-warning"
+                         style="width: 120px; height: 120px; object-fit: cover;">
+                </div>
+                <h4 class="fw-bold mb-1">{{ top_users[0][1].username }}</h4>
+                <div class="podium-stats mb-2">
+                    {% if ranking_by == 'score' %}
+                    <span class="badge bg-primary fs-6">{{ top_users[0][1].total_score }} pts</span>
+                    {% elif ranking_by == 'streak' %}
+                    <span class="badge bg-danger fs-6">{{ top_users[0][1].current_streak }} días 🔥</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark fs-6">{{ top_users[0][1].total_stars }} ⭐</span>
+                    {% endif %}
+                </div>
+                <div class="podium-level">
+                    <small class="text-muted">Nivel {{ top_users[0][1].level }}</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tercer lugar -->
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="podium-card bronze text-center">
+                <div class="podium-position">3</div>
+                <div class="podium-avatar mb-3">
+                    <img src="{{ url_for('static', filename='avatars/' + top_users[2][1].avatar) }}" 
+                         alt="Avatar" class="rounded-circle border border-4 border-bronze"
+                         style="width: 90px; height: 90px; object-fit: cover;">
+                </div>
+                <h5 class="fw-bold mb-1">{{ top_users[2][1].username }}</h5>
+                <div class="podium-stats mb-2">
+                    {% if ranking_by == 'score' %}
+                    <span class="badge bg-primary">{{ top_users[2][1].total_score }} pts</span>
+                    {% elif ranking_by == 'streak' %}
+                    <span class="badge bg-danger">{{ top_users[2][1].current_streak }} días 🔥</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark">{{ top_users[2][1].total_stars }} ⭐</span>
+                    {% endif %}
+                </div>
+                <div class="podium-level">
+                    <small class="text-muted">Nivel {{ top_users[2][1].level }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Tabla de ranking -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm" data-aos="fade-up">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h4 class="fw-bold mb-0">
+                        <i class="bi bi-list-ol text-primary me-2"></i>
+                        Clasificación General
+                        <span class="badge bg-primary ms-2">{{ top_users|length }}</span>
+                    </h4>
+                </div>
+                
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="px-4 py-3">Posición</th>
+                                    <th class="py-3">Usuario</th>
+                                    <th class="py-3">Nivel</th>
+                                    {% if ranking_by == 'score' %}
+                                    <th class="py-3">Puntos</th>
+                                    {% elif ranking_by == 'streak' %}
+                                    <th class="py-3">Racha</th>
+                                    {% else %}
+                                    <th class="py-3">Estrellas</th>
+                                    {% endif %}
+                                    <th class="py-3 px-4">Logros</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rank, user in top_users %}
+                                <tr class="{% if user.id == current_user.id %}table-primary{% endif %}"
+                                    {% if user.id == current_user.id %}data-current-user="true"{% endif %}>
+                                    <td class="px-4 py-3">
+                                        <div class="d-flex align-items-center">
+                                            {% if rank == 1 %}
+                                            <span class="badge bg-warning text-dark p-2" style="width: 40px;">🥇</span>
+                                            {% elif rank == 2 %}
+                                            <span class="badge bg-secondary text-white p-2" style="width: 40px;">🥈</span>
+                                            {% elif rank == 3 %}
+                                            <span class="badge bg-bronze text-white p-2" style="width: 40px;">🥉</span>
+                                            {% else %}
+                                            <span class="badge bg-light text-dark p-2" style="width: 40px;">#{{ rank }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td class="py-3">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ url_for('static', filename='avatars/' + user.avatar) }}" 
+                                                 alt="Avatar" class="rounded-circle me-2" 
+                                                 style="width: 35px; height: 35px; object-fit: cover;">
+                                            <div>
+                                                <span class="fw-bold">{{ user.username }}</span>
+                                                {% if user.id == current_user.id %}
+                                                <span class="badge bg-primary ms-2">Tú</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="badge bg-info">Nv. {{ user.level }}</span>
+                                    </td>
+                                    {% if ranking_by == 'score' %}
+                                    <td class="py-3 fw-bold text-primary">{{ user.total_score }}</td>
+                                    {% elif ranking_by == 'streak' %}
+                                    <td class="py-3">
+                                        <span class="fw-bold text-danger">{{ user.current_streak }}</span>
+                                        <small class="text-muted">días</small>
+                                        {% if user.current_streak > 0 %}
+                                        <i class="bi bi-fire text-danger ms-1"></i>
+                                        {% endif %}
+                                    </td>
+                                    {% else %}
+                                    <td class="py-3">
+                                        <span class="fw-bold text-warning">{{ user.total_stars }}</span>
+                                        <i class="bi bi-star-fill text-warning ms-1"></i>
+                                    </td>
+                                    {% endif %}
+                                    <td class="py-3 px-4">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-trophy-fill text-warning me-1"></i>
+                                            <span>{{ user.achievements_unlocked|length }}</span>
+                                            <span class="text-muted ms-1">/ 15</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas globales -->
+    <div class="row mt-5 g-4">
+        <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="card border-0 shadow-sm bg-primary bg-opacity-10 text-center">
+                <div class="card-body">
+                    <i class="bi bi-people display-5 text-primary mb-2"></i>
+                    <h3 class="fw-bold mb-0">{{ top_users|length }}</h3>
+                    <small class="text-muted">Usuarios activos</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="card border-0 shadow-sm bg-success bg-opacity-10 text-center">
+                <div class="card-body">
+                    <i class="bi bi-trophy display-5 text-success mb-2"></i>
+                    <h3 class="fw-bold mb-0">{{ top_users|map(attribute='1.total_score')|sum }}</h3>
+                    <small class="text-muted">Puntos totales</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="card border-0 shadow-sm bg-warning bg-opacity-10 text-center">
+                <div class="card-body">
+                    <i class="bi bi-star-fill display-5 text-warning mb-2"></i>
+                    <h3 class="fw-bold mb-0">{{ top_users|map(attribute='1.total_stars')|sum }}</h3>
+                    <small class="text-muted">Estrellas totales</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="400">
+            <div class="card border-0 shadow-sm bg-danger bg-opacity-10 text-center">
+                <div class="card-body">
+                    <i class="bi bi-fire display-5 text-danger mb-2"></i>
+                    <h3 class="fw-bold mb-0">{{ top_users|map(attribute='1.current_streak')|sum }}</h3>
+                    <small class="text-muted">Rachas totales</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tu posición actual -->
+    <div class="row mt-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm bg-primary text-white">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="fw-bold mb-2">
+                                <i class="bi bi-person-circle me-2"></i>
+                                Tu posición actual
+                            </h5>
+                            <p class="mb-0 opacity-75">
+                                Estás en el puesto #{{ user_rank }} del ranking general.
+                                {% if user_rank == 1 %}
+                                ¡Eres el número 1! Sigue así 🏆
+                                {% elif user_rank <= 3 %}
+                                ¡Estás en el podio! Mantén tu posición 🥉
+                                {% elif user_rank <= 10 %}
+                                ¡Top 10! Sigue esforzándote para llegar al podio 🚀
+                                {% else %}
+                                Sigue practicando para subir posiciones 💪
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <div class="display-3 fw-bold">{{ user_rank }}</div>
+                            <small>de {{ top_users|length }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos para el podio */
+.podium-card {
+    padding: 2rem 1rem;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.podium-card:hover {
+    transform: translateY(-10px);
+}
+
+.podium-card.gold {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #333;
+}
+
+.podium-card.silver {
+    background: linear-gradient(135deg, #c0c0c0, #e0e0e0);
+    color: #333;
+}
+
+.podium-card.bronze {
+    background: linear-gradient(135deg, #cd7f32, #e69b5c);
+    color: white;
+}
+
+.podium-position {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.gold .podium-position { color: #ffd700; }
+.silver .podium-position { color: #c0c0c0; }
+.bronze .podium-position { color: #cd7f32; }
+
+.crown {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.border-bronze {
+    border-color: #cd7f32 !important;
+}
+
+/* Badge personalizado para bronce */
+.bg-bronze {
+    background: linear-gradient(135deg, #cd7f32, #b87333);
+    color: white;
+}
+
+/* Animaciones para la tabla */
+.table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+    transform: scale(1.01);
+}
+
+.table tbody tr.table-primary {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0.2));
+    border-left: 4px solid #3498db;
+}
+
+/* Efecto de brillo para el primer lugar */
+@keyframes shine {
+    0% { box-shadow: 0 0 10px #ffd700; }
+    50% { box-shadow: 0 0 30px #ffd700; }
+    100% { box-shadow: 0 0 10px #ffd700; }
+}
+
+.gold {
+    animation: shine 3s infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .podium-card {
+        margin-bottom: 2rem;
+    }
+    
+    .podium-avatar img {
+        width: 80px !important;
+        height: 80px !important;
+    }
+    
+    .table {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        border-radius: 8px !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    .podium-card {
+        padding: 1.5rem 0.5rem;
+    }
+}
+</style>
+
+<script>
+// Resaltar fila del usuario actual
+document.addEventListener('DOMContentLoaded', function() {
+    const currentUserRow = document.querySelector('[data-current-user="true"]');
+    if (currentUserRow) {
+        currentUserRow.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+    }
+});
+
+// Compartir posición en ranking
+function shareRanking() {
+    const rank = {{ user_rank }};
+    const total = {{ top_users|length }};
+    const text = `¡Estoy en la posición #${rank} de ${total} en el ranking de ComunicaPro! 🏆`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Mi posición en el ranking',
+            text: text,
+            url: window.location.href
+        });
+    } else {
+        // Fallback a copiar al portapapeles
+        navigator.clipboard.writeText(text);
+        Notifications.toast('Texto copiado al portapapeles', 'success');
+    }
+}
+
+// Ver perfil de usuario
+function viewProfile(username) {
+    window.location.href = `/perfil?user=${username}`;
+}
+
+// Actualizar ranking en tiempo real (simulado)
+setInterval(() => {
+    // Aquí se podría implementar actualización automática
+    console.log('Ranking actualizado');
+}, 60000); // Cada minuto
+
+// Animación de conteo para estadísticas
+document.addEventListener('DOMContentLoaded', function() {
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const target = parseInt(counter.textContent);
+        let current = 0;
+        const increment = target / 50;
+        
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                counter.textContent = target;
+                clearInterval(timer);
+            } else {
+                counter.textContent = Math.round(current);
+            }
+        }, 20);
+    });
+});
+
+// Tooltips para información adicional
+const tooltips = [{
+    selector: '.podium-card',
+    title: '¡Los mejores del mes!'
+}];
+
+tooltips.forEach(t => {
+    const elements = document.querySelectorAll(t.selector);
+    elements.forEach(el => {
+        el.setAttribute('data-bs-toggle', 'tooltip');
+        el.setAttribute('data-bs-title', t.title);
+    });
+});
+
+// Inicializar tooltips de Bootstrap
+document.addEventListener('DOMContentLoaded', function() {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltipTriggerList.forEach(tooltipTriggerEl => {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}

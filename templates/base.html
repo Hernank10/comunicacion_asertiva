@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="{{ current_user.language if current_user.is_authenticated else 'es' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Comunicación Asertiva - Plataforma Educativa{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- AOS (Animate On Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #2ecc71;
+            --warning-color: #f1c40f;
+            --info-color: #3498db;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        main {
+            flex: 1;
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-color) !important;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: var(--dark-color) !important;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: var(--secondary-color) !important;
+        }
+        
+        .nav-link.active {
+            color: var(--secondary-color) !important;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--light-color);
+        }
+        
+        .badge-notification {
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translate(25%, -25%);
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .progress-level {
+            height: 6px;
+            border-radius: 3px;
+            background-color: #e9ecef;
+        }
+        
+        .progress-level-bar {
+            background: linear-gradient(90deg, var(--secondary-color), var(--info-color));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer a:hover {
+            color: white;
+        }
+        
+        .notification-dropdown {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .notification-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e9ecef;
+            transition: background-color 0.3s;
+        }
+        
+        .notification-item:hover {
+            background-color: var(--light-color);
+        }
+        
+        .notification-item.unread {
+            background-color: #e8f4f8;
+        }
+        
+        .notification-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="bi bi-chat-quote-fill text-primary me-2"></i>
+                ComunicaPro
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'teoria' %}active{% endif %}" 
+                           href="{{ url_for('teoria') }}">
+                            <i class="bi bi-book me-1"></i> Teoría
+                        </a>
+                    </li>
+                    
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'ejercicios' %}active{% endif %}" 
+                           href="{{ url_for('ejercicios') }}">
+                            <i class="bi bi-pencil-square me-1"></i> Ejercicios
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'flashcards' %}active{% endif %}" 
+                           href="{{ url_for('flashcards') }}">
+                            <i class="bi bi-card-list me-1"></i> Flashcards
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'practica' %}active{% endif %}" 
+                           href="{{ url_for('practica') }}">
+                            <i class="bi bi-lightning-charge me-1"></i> Práctica
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'progreso' %}active{% endif %}" 
+                           href="{{ url_for('progreso') }}">
+                            <i class="bi bi-graph-up me-1"></i> Progreso
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'logros' %}active{% endif %}" 
+                           href="{{ url_for('logros') }}">
+                            <i class="bi bi-trophy me-1"></i> Logros
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'ranking' %}active{% endif %}" 
+                           href="{{ url_for('ranking') }}">
+                            <i class="bi bi-bar-chart me-1"></i> Ranking
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'creador' %}active{% endif %}" 
+                           href="{{ url_for('creador') }}">
+                            <i class="bi bi-plus-circle me-1"></i> Creador
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                
+                <ul class="navbar-nav ms-auto">
+                    {% if current_user.is_authenticated %}
+                    <!-- Notificaciones -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link position-relative" href="#" id="notificationsDropdown" 
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-bell fs-5"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge" 
+                                  id="notificationCount" style="display: none;">0</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end notification-dropdown" 
+                             aria-labelledby="notificationsDropdown" style="width: 300px;">
+                            <div class="dropdown-header d-flex justify-content-between align-items-center">
+                                <span>Notificaciones</span>
+                                <button class="btn btn-sm btn-link" onclick="markAllNotificationsRead()">
+                                    Marcar todas como leídas
+                                </button>
+                            </div>
+                            <div id="notificationsList" class="notification-list">
+                                <div class="text-center py-3 text-muted">
+                                    <i class="bi bi-bell-slash"></i>
+                                    <p class="mb-0">No hay notificaciones</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    
+                    <!-- Menú de usuario -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" 
+                           id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ url_for('static', filename='avatars/' + current_user.avatar) }}" 
+                                 alt="Avatar" class="user-avatar me-2">
+                            <span>{{ current_user.username }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li>
+                                <div class="dropdown-item-text">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="fw-bold">Nivel {{ current_user.level }}</span>
+                                        <span class="text-muted small">{{ current_user.experience_points }}/{{ current_user.level * 100 }} XP</span>
+                                    </div>
+                                    <div class="progress-level">
+                                        <div class="progress-level-bar" style="width: {{ current_user.get_level_progress() }}%"></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('perfil') }}">
+                                    <i class="bi bi-person me-2"></i> Mi Perfil
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="changeLanguage('es')">
+                                    <i class="bi bi-flag me-2"></i> Español
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="changeLanguage('en')">
+                                    <i class="bi bi-flag me-2"></i> English
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="changeLanguage('fr')">
+                                    <i class="bi bi-flag me-2"></i> Français
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Puntos y estrellas -->
+                    <li class="nav-item d-flex align-items-center ms-2">
+                        <span class="badge bg-primary me-2">
+                            <i class="bi bi-star-fill text-warning me-1"></i> {{ current_user.total_stars }}
+                        </span>
+                        <span class="badge bg-success">
+                            <i class="bi bi-trophy-fill text-warning me-1"></i> {{ current_user.total_score }}
+                        </span>
+                    </li>
+                    
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary ms-2" href="{{ url_for('registro') }}">
+                            <i class="bi bi-person-plus me-1"></i> Registrarse
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show" 
+                         role="alert">
+                        {% if category == 'success' %}
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                        {% elif category == 'error' or category == 'danger' %}
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        {% elif category == 'warning' %}
+                            <i class="bi bi-exclamation-circle-fill me-2"></i>
+                        {% elif category == 'info' %}
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                        {% endif %}
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="mb-3">
+                        <i class="bi bi-chat-quote-fill me-2"></i>
+                        ComunicaPro
+                    </h5>
+                    <p class="text-light">
+                        Plataforma educativa para aprender y practicar 
+                        comunicación asertiva en español.
+                    </p>
+                </div>
+                
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="mb-3">Enlaces rápidos</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="{{ url_for('teoria') }}" class="text-light">
+                                <i class="bi bi-chevron-right me-2"></i> Teoría
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{{ url_for('ejercicios') }}" class="text-light">
+                                <i class="bi bi-chevron-right me-2"></i> Ejercicios
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{{ url_for('flashcards') }}" class="text-light">
+                                <i class="bi bi-chevron-right me-2"></i> Flashcards
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{{ url_for('practica') }}" class="text-light">
+                                <i class="bi bi-chevron-right me-2"></i> Práctica
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-4">
+                    <h5 class="mb-3">Síguenos</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-light fs-4">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="#" class="text-light fs-4">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="text-light fs-4">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="text-light fs-4">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        <a href="#" class="text-light fs-4">
+                            <i class="bi bi-github"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <p class="text-light mb-0">
+                            <i class="bi bi-envelope me-2"></i>
+                            info@comunicapro.com
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="bg-light mt-4">
+            
+            <div class="text-center text-light">
+                <p class="mb-0">
+                    &copy; 2024 ComunicaPro. Todos los derechos reservados.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery (para algunas funcionalidades) -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    
+    <!-- AOS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <script>
+        // Inicializar AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+        
+        // Función para cambiar idioma
+        function changeLanguage(lang) {
+            fetch('/api/perfil/actualizar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({language: lang})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    location.reload();
+                }
+            });
+        }
+        
+        // Sistema de notificaciones
+        {% if current_user.is_authenticated %}
+        function loadNotifications() {
+            fetch('/api/notificaciones')
+                .then(response => response.json())
+                .then(notifications => {
+                    const list = document.getElementById('notificationsList');
+                    const count = document.getElementById('notificationCount');
+                    
+                    if(notifications.length > 0) {
+                        count.style.display = 'inline';
+                        count.textContent = notifications.length;
+                        
+                        let html = '';
+                        notifications.forEach(n => {
+                            html += `
+                                <div class="notification-item unread">
+                                    <div class="d-flex">
+                                        <div class="notification-icon bg-${n.color} text-white me-3">
+                                            <i class="bi ${n.icon}"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">${n.title}</h6>
+                                            <p class="mb-0 small">${n.message}</p>
+                                            <small class="text-muted">${new Date(n.created_at).toLocaleString()}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        list.innerHTML = html;
+                    } else {
+                        count.style.display = 'none';
+                        list.innerHTML = `
+                            <div class="text-center py-3 text-muted">
+                                <i class="bi bi-bell-slash"></i>
+                                <p class="mb-0">No hay notificaciones</p>
+                            </div>
+                        `;
+                    }
+                });
+        }
+        
+        function markAllNotificationsRead() {
+            fetch('/api/notificaciones/leer', {method: 'POST'})
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        document.getElementById('notificationCount').style.display = 'none';
+                        loadNotifications();
+                    }
+                });
+        }
+        
+        // Cargar notificaciones cada 30 segundos
+        loadNotifications();
+        setInterval(loadNotifications, 30000);
+        {% endif %}
+        
+        // Marcar enlace activo en la navegación
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                if(link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Tooltips de Bootstrap
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Popovers de Bootstrap
+        const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        popoverTriggerList.map(function(popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl);
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

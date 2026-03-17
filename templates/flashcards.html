@@ -1,0 +1,596 @@
+{% extends "base.html" %}
+
+{% block title %}Flashcards - Comunicación Asertiva{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12 text-center" data-aos="fade-down">
+            <h1 class="display-5 fw-bold mb-3">
+                <i class="bi bi-card-list text-primary me-3"></i>
+                Flashcards de Estudio
+            </h1>
+            <p class="lead text-muted">
+                Aprende y repasa conceptos clave de comunicación asertiva
+            </p>
+        </div>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="row mb-4 g-3">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card border-0 shadow-sm bg-primary bg-opacity-10">
+                <div class="card-body text-center">
+                    <i class="bi bi-book display-6 text-primary mb-2"></i>
+                    <h3 class="fw-bold mb-0">{{ total_studied }}</h3>
+                    <small class="text-muted">Flashcards estudiadas</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="card border-0 shadow-sm bg-success bg-opacity-10">
+                <div class="card-body text-center">
+                    <i class="bi bi-check-circle display-6 text-success mb-2"></i>
+                    <h3 class="fw-bold mb-0">{{ mastered }}</h3>
+                    <small class="text-muted">Dominadas</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="card border-0 shadow-sm bg-warning bg-opacity-10">
+                <div class="card-body text-center">
+                    <i class="bi bi-clock-history display-6 text-warning mb-2"></i>
+                    <h3 class="fw-bold mb-0">{{ due|length if due else 0 }}</h3>
+                    <small class="text-muted">Pendientes de repaso</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Selector de categoría -->
+    <div class="row mb-4">
+        <div class="col-md-6 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <label class="form-label fw-bold mb-2">
+                        <i class="bi bi-tags me-2"></i>Filtrar por categoría
+                    </label>
+                    <select class="form-select" id="categorySelect" onchange="changeCategory(this.value)">
+                        <option value="">Todas las categorías</option>
+                        <option value="fundamentos" {% if category == 'fundamentos' %}selected{% endif %}>Fundamentos</option>
+                        <option value="tecnicas" {% if category == 'tecnicas' %}selected{% endif %}>Técnicas</option>
+                        <option value="no_verbal" {% if category == 'no_verbal' %}selected{% endif %}>Comunicación no verbal</option>
+                        <option value="escucha" {% if category == 'escucha' %}selected{% endif %}>Escucha activa</option>
+                        <option value="emociones" {% if category == 'emociones' %}selected{% endif %}>Manejo de emociones</option>
+                        <option value="feedback" {% if category == 'feedback' %}selected{% endif %}>Feedback</option>
+                        <option value="conflictos" {% if category == 'conflictos' %}selected{% endif %}>Conflictos</option>
+                        <option value="laboral" {% if category == 'laboral' %}selected{% endif %}>Ámbito laboral</option>
+                        <option value="familia" {% if category == 'familia' %}selected{% endif %}>Familia y pareja</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Área de flashcard -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="flashcard-container" data-aos="fade-up">
+                <div class="flashcard" id="flashcard" onclick="flipCard()">
+                    <div class="flashcard-inner">
+                        <!-- Frente de la tarjeta -->
+                        <div class="flashcard-front">
+                            <div class="flashcard-content">
+                                <span class="badge bg-primary mb-3" id="cardCategory">{{ flashcard.categoria if flashcard else 'Cargando...' }}</span>
+                                <h3 class="fw-bold mb-4" id="cardTitle">{{ flashcard.titulo if flashcard else 'Comunicación Asertiva' }}</h3>
+                                <p class="text-muted mb-4"><i class="bi bi-arrow-repeat me-2"></i>Haz clic para ver el contenido</p>
+                                <div class="flashcard-footer">
+                                    <span class="badge bg-info" id="cardLevel">
+                                        {% if flashcard and flashcard.nivel %}{{ flashcard.nivel|capitalize }}{% else %}Básico{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Reverso de la tarjeta -->
+                        <div class="flashcard-back">
+                            <div class="flashcard-content">
+                                <h4 class="fw-bold mb-3" id="cardBackTitle">{{ flashcard.titulo if flashcard else 'Comunicación Asertiva' }}</h4>
+                                <p class="mb-4" id="cardContent">{{ flashcard.contenido if flashcard else 'Contenido de la flashcard...' }}</p>
+                                
+                                {% if flashcard and flashcard.ejemplo %}
+                                <div class="alert alert-info mb-3">
+                                    <i class="bi bi-lightbulb me-2"></i>
+                                    <strong>Ejemplo:</strong>
+                                    <p class="mb-0 mt-2" id="cardExample">{{ flashcard.ejemplo }}</p>
+                                </div>
+                                {% endif %}
+                                
+                                {% if flashcard and flashcard.consejo_clave %}
+                                <div class="bg-light p-3 rounded">
+                                    <i class="bi bi-star-fill text-warning me-2"></i>
+                                    <strong>Consejo clave:</strong>
+                                    <p class="mb-0 mt-1" id="cardTip">{{ flashcard.consejo_clave }}</p>
+                                </div>
+                                {% endif %}
+                                
+                                <div class="flashcard-footer mt-4">
+                                    <span class="badge bg-secondary" id="cardId">ID: {{ flashcard.id if flashcard else '1' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controles de navegación -->
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <button class="btn btn-outline-primary btn-lg" onclick="previousCard()">
+                    <i class="bi bi-chevron-left me-2"></i>Anterior
+                </button>
+                
+                <div class="text-center">
+                    <span class="badge bg-primary p-3" id="cardCounter">
+                        {% if study %}Estudio #{{ study.id }}{% else %}Nueva{% endif %}
+                    </span>
+                </div>
+                
+                <button class="btn btn-outline-primary btn-lg" onclick="nextCard()">
+                    Siguiente<i class="bi bi-chevron-right ms-2"></i>
+                </button>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="row g-2 mt-4">
+                <div class="col-md-4">
+                    <button class="btn btn-success w-100" onclick="markMastered({{ flashcard.id if flashcard else 0 }})">
+                        <i class="bi bi-check-circle me-2"></i>Marcar como dominada
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-warning w-100" onclick="needReview()">
+                        <i class="bi bi-arrow-repeat me-2"></i>Necesito repasar
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-info w-100" onclick="saveFlashcard()">
+                        <i class="bi bi-bookmark-plus me-2"></i>Guardar para después
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progreso de repaso -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">
+                        <i class="bi bi-bar-chart me-2"></i>Tu progreso en flashcards
+                    </h6>
+                    <div class="progress mb-2" style="height: 10px;">
+                        <div class="progress-bar bg-success" 
+                             style="width: {{ (mastered / 50 * 100) if mastered > 0 else 0 }}%">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between small text-muted">
+                        <span>Dominadas: {{ mastered }}/50</span>
+                        <span>Estudiadas: {{ total_studied }}/50</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consejo del día -->
+            <div class="alert alert-info mt-4" data-aos="fade-up">
+                <i class="bi bi-lightbulb-fill me-2"></i>
+                <strong>Consejo:</strong> Repasa las flashcards regularmente usando el sistema de repaso espaciado para un aprendizaje óptimo.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de revisión -->
+<div class="modal fade" id="reviewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-star me-2"></i>
+                    Califica tu repaso
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <p class="mb-4">¿Qué tan bien recordabas esta flashcard?</p>
+                
+                <div class="rating-container mb-4">
+                    <button class="btn btn-outline-danger btn-lg mx-1" onclick="submitReview(1)">
+                        <i class="bi bi-emoji-frown fs-1"></i>
+                        <span class="d-block small">Nada</span>
+                    </button>
+                    <button class="btn btn-outline-warning btn-lg mx-1" onclick="submitReview(2)">
+                        <i class="bi bi-emoji-neutral fs-1"></i>
+                        <span class="d-block small">Poco</span>
+                    </button>
+                    <button class="btn btn-outline-info btn-lg mx-1" onclick="submitReview(3)">
+                        <i class="bi bi-emoji-smile fs-1"></i>
+                        <span class="d-block small">Regular</span>
+                    </button>
+                    <button class="btn btn-outline-success btn-lg mx-1" onclick="submitReview(4)">
+                        <i class="bi bi-emoji-heart-eyes fs-1"></i>
+                        <span class="d-block small">Bien</span>
+                    </button>
+                    <button class="btn btn-outline-primary btn-lg mx-1" onclick="submitReview(5)">
+                        <i class="bi bi-stars fs-1"></i>
+                        <span class="d-block small">Perfecto</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.flashcard-container {
+    perspective: 1000px;
+    margin-bottom: 2rem;
+    cursor: pointer;
+}
+
+.flashcard {
+    width: 100%;
+    height: 400px;
+    position: relative;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.flashcard.flipped {
+    transform: rotateY(180deg);
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.flashcard-front, .flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+.flashcard-front {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flashcard-back {
+    background: white;
+    transform: rotateY(180deg);
+    text-align: left;
+}
+
+.flashcard-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.flashcard-footer {
+    margin-top: auto;
+    text-align: center;
+}
+
+.rating-container {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.rating-container .btn {
+    min-width: 80px;
+    padding: 1rem 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.rating-container .btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Animaciones */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.flashcard:hover {
+    animation: pulse 1s infinite;
+}
+
+/* Scroll personalizado */
+.flashcard-front::-webkit-scrollbar,
+.flashcard-back::-webkit-scrollbar {
+    width: 6px;
+}
+
+.flashcard-front::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+}
+
+.flashcard-front::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+}
+
+.flashcard-back::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.flashcard-back::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .flashcard {
+        height: 350px;
+    }
+    
+    .rating-container .btn {
+        min-width: 60px;
+        font-size: 0.8rem;
+    }
+    
+    .rating-container .btn i {
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .flashcard {
+        height: 300px;
+    }
+    
+    .flashcard-front h3,
+    .flashcard-back h4 {
+        font-size: 1.2rem;
+    }
+}
+</style>
+
+<script>
+let currentFlashcard = {{ flashcard|tojson if flashcard else 'null' }};
+let currentStudyId = {{ study.id if study else 'null' }};
+let isFlipped = false;
+
+// Inicializar
+document.addEventListener('DOMContentLoaded', function() {
+    // Cargar progreso guardado
+    loadProgress();
+});
+
+// Voltear tarjeta
+function flipCard() {
+    const card = document.getElementById('flashcard');
+    isFlipped = !isFlipped;
+    card.classList.toggle('flipped');
+}
+
+// Siguiente tarjeta
+function nextCard() {
+    const category = document.getElementById('categorySelect').value;
+    let url = '/api/flashcard/next';
+    if (category) {
+        url += '?categoria=' + encodeURIComponent(category);
+    }
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                Notifications.toast('No hay más flashcards disponibles', 'warning');
+                return;
+            }
+            
+            currentFlashcard = data.flashcard;
+            currentStudyId = data.study_id;
+            updateCardContent();
+            
+            // Resetear flip
+            document.getElementById('flashcard').classList.remove('flipped');
+            isFlipped = false;
+            
+            // Mostrar modal de revisión si hay study_id
+            if (currentStudyId) {
+                setTimeout(() => {
+                    const modal = new bootstrap.Modal(document.getElementById('reviewModal'));
+                    modal.show();
+                }, 500);
+            }
+        });
+}
+
+// Tarjeta anterior (simula una nueva)
+function previousCard() {
+    nextCard(); // Por simplicidad, solo cargamos otra
+}
+
+// Marcar como dominada
+function markMastered(flashcardId) {
+    if (!flashcardId) {
+        Notifications.toast('No hay flashcard activa', 'warning');
+        return;
+    }
+    
+    fetch(`/api/flashcard/master/${flashcardId}`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Notifications.toast('¡Flashcard marcada como dominada!', 'success');
+            nextCard();
+        }
+    });
+}
+
+// Enviar calificación de revisión
+function submitReview(quality) {
+    if (!currentStudyId) {
+        bootstrap.Modal.getInstance(document.getElementById('reviewModal')).hide();
+        return;
+    }
+    
+    fetch(`/api/flashcard/review/${currentStudyId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ quality: quality })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            let message = '¡Buen trabajo! ';
+            if (data.mastered) {
+                message += 'Has dominado esta flashcard.';
+                Notifications.toast('🎉 ¡Felicidades! Has dominado esta flashcard', 'success');
+            } else {
+                const days = Math.ceil((new Date(data.next_review) - new Date()) / (1000 * 60 * 60 * 24));
+                message += `Volverás a verla en ${days} días.`;
+                Notifications.toast(message, 'info');
+            }
+        }
+    })
+    .finally(() => {
+        bootstrap.Modal.getInstance(document.getElementById('reviewModal')).hide();
+    });
+}
+
+// Necesito repasar (calidad baja)
+function needReview() {
+    if (currentStudyId) {
+        submitReview(1);
+    } else {
+        Notifications.toast('Esta es una flashcard nueva', 'info');
+    }
+}
+
+// Guardar flashcard para después
+function saveFlashcard() {
+    if (!currentFlashcard) {
+        Notifications.toast('No hay flashcard activa', 'warning');
+        return;
+    }
+    
+    // Guardar en localStorage
+    let saved = Storage.get('saved_flashcards') || [];
+    if (!saved.includes(currentFlashcard.id)) {
+        saved.push(currentFlashcard.id);
+        Storage.set('saved_flashcards', saved);
+        Notifications.toast('Flashcard guardada para después', 'success');
+    } else {
+        Notifications.toast('Ya habías guardado esta flashcard', 'info');
+    }
+}
+
+// Cambiar categoría
+function changeCategory(category) {
+    // Guardar preferencia
+    Storage.set('preferred_category', category);
+    
+    // Cargar nueva flashcard
+    nextCard();
+    
+    // Actualizar URL sin recargar
+    const url = new URL(window.location);
+    if (category) {
+        url.searchParams.set('categoria', category);
+    } else {
+        url.searchParams.delete('categoria');
+    }
+    window.history.pushState({}, '', url);
+}
+
+// Actualizar contenido de la tarjeta
+function updateCardContent() {
+    if (!currentFlashcard) return;
+    
+    document.getElementById('cardCategory').textContent = currentFlashcard.categoria;
+    document.getElementById('cardTitle').textContent = currentFlashcard.titulo;
+    document.getElementById('cardBackTitle').textContent = currentFlashcard.titulo;
+    document.getElementById('cardContent').textContent = currentFlashcard.contenido;
+    document.getElementById('cardLevel').textContent = currentFlashcard.nivel || 'básico';
+    document.getElementById('cardId').textContent = `ID: ${currentFlashcard.id}`;
+    document.getElementById('cardCounter').textContent = `Estudiando #${currentFlashcard.id}`;
+    
+    // Actualizar ejemplo si existe
+    const exampleElement = document.getElementById('cardExample');
+    if (exampleElement && currentFlashcard.ejemplo) {
+        exampleElement.textContent = currentFlashcard.ejemplo;
+        exampleElement.closest('.alert').style.display = 'block';
+    } else if (exampleElement) {
+        exampleElement.closest('.alert').style.display = 'none';
+    }
+    
+    // Actualizar consejo si existe
+    const tipElement = document.getElementById('cardTip');
+    if (tipElement && currentFlashcard.consejo_clave) {
+        tipElement.textContent = currentFlashcard.consejo_clave;
+    }
+}
+
+// Cargar progreso guardado
+function loadProgress() {
+    // Cargar categoría preferida
+    const savedCategory = Storage.get('preferred_category');
+    if (savedCategory) {
+        document.getElementById('categorySelect').value = savedCategory;
+    }
+    
+    // Cargar flashcards guardadas
+    const saved = Storage.get('saved_flashcards') || [];
+    if (saved.length > 0) {
+        Notifications.toast(`Tienes ${saved.length} flashcards guardadas`, 'info');
+    }
+}
+
+// Atajo de teclado: espacio para voltear
+document.addEventListener('keydown', function(e) {
+    if (e.code === 'Space' && !e.target.matches('input, textarea, select')) {
+        e.preventDefault();
+        flipCard();
+    }
+    
+    // Flecha derecha para siguiente
+    if (e.code === 'ArrowRight' && !e.target.matches('input, textarea, select')) {
+        e.preventDefault();
+        nextCard();
+    }
+    
+    // Flecha izquierda para anterior
+    if (e.code === 'ArrowLeft' && !e.target.matches('input, textarea, select')) {
+        e.preventDefault();
+        previousCard();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,724 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil - Comunicación Asertiva{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar del perfil -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm border-0 sticky-top" style="top: 80px;" data-aos="fade-right">
+                <!-- Cabecera del perfil -->
+                <div class="card-body text-center p-4">
+                    <div class="position-relative d-inline-block mb-3">
+                        <img src="{{ url_for('static', filename='avatars/' + current_user.avatar) }}" 
+                             alt="Avatar" 
+                             class="rounded-circle img-thumbnail" 
+                             style="width: 150px; height: 150px; object-fit: cover;"
+                             id="profileAvatar">
+                        <button class="btn btn-primary btn-sm rounded-circle position-absolute bottom-0 end-0"
+                                onclick="document.getElementById('avatarInput').click()"
+                                data-bs-toggle="tooltip"
+                                title="Cambiar avatar">
+                            <i class="bi bi-camera-fill"></i>
+                        </button>
+                        <input type="file" id="avatarInput" class="d-none" accept="image/*" onchange="previewAvatar(this)">
+                    </div>
+                    
+                    <h3 class="fw-bold mb-1">{{ current_user.username }}</h3>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-envelope me-2"></i>{{ current_user.email }}
+                    </p>
+                    <p class="text-muted small">
+                        <i class="bi bi-calendar me-2"></i>Miembro desde: {{ current_user.created_at.strftime('%d/%m/%Y') }}
+                    </p>
+                    
+                    <!-- Badges rápidos -->
+                    <div class="d-flex justify-content-center gap-2 mb-3">
+                        <span class="badge bg-primary">
+                            <i class="bi bi-trophy me-1"></i>Nivel {{ current_user.level }}
+                        </span>
+                        <span class="badge bg-success">
+                            <i class="bi bi-star-fill me-1"></i>{{ current_user.total_stars }} estrellas
+                        </span>
+                        <span class="badge bg-info">
+                            <i class="bi bi-fire me-1"></i>{{ current_user.current_streak }} días
+                        </span>
+                    </div>
+                    
+                    <!-- Barra de experiencia -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <small class="text-muted">Experiencia</small>
+                            <small class="fw-bold">{{ current_user.experience_points }}/{{ current_user.level * 100 }} XP</small>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" 
+                                 style="width: {{ current_user.get_level_progress() }}%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navegación del perfil -->
+                <div class="list-group list-group-flush">
+                    <a href="#info-personal" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="bi bi-person fs-5 me-3 text-primary"></i>
+                        <span>Información personal</span>
+                    </a>
+                    <a href="#estadisticas" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="bi bi-graph-up fs-5 me-3 text-success"></i>
+                        <span>Estadísticas detalladas</span>
+                    </a>
+                    <a href="#logros" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="bi bi-trophy fs-5 me-3 text-warning"></i>
+                        <span>Logros obtenidos</span>
+                    </a>
+                    <a href="#actividad" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="bi bi-calendar-check fs-5 me-3 text-info"></i>
+                        <span>Actividad reciente</span>
+                    </a>
+                    <a href="#configuracion" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="bi bi-gear fs-5 me-3 text-secondary"></i>
+                        <span>Configuración</span>
+                    </a>
+                    <a href="#exportar" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="bi bi-download fs-5 me-3 text-danger"></i>
+                        <span>Exportar datos</span>
+                    </a>
+                </div>
+                
+                <!-- Acciones rápidas -->
+                <div class="card-footer bg-transparent p-3">
+                    <button class="btn btn-outline-primary w-100 mb-2" onclick="editProfile()">
+                        <i class="bi bi-pencil me-2"></i>Editar perfil
+                    </button>
+                    <button class="btn btn-outline-danger w-100" onclick="confirmDelete()">
+                        <i class="bi bi-trash me-2"></i>Eliminar cuenta
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contenido principal del perfil -->
+        <div class="col-lg-8">
+            <!-- Información personal -->
+            <section id="info-personal" class="mb-4" data-aos="fade-up">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-transparent border-0 pt-4 px-4">
+                        <h4 class="fw-bold mb-0">
+                            <i class="bi bi-person text-primary me-2"></i>
+                            Información personal
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small">Nombre de usuario</label>
+                                <p class="fw-bold mb-0">{{ current_user.username }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small">Correo electrónico</label>
+                                <p class="fw-bold mb-0">{{ current_user.email }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small">Idioma preferido</label>
+                                <p class="fw-bold mb-0">
+                                    {% if current_user.language == 'es' %}Español{% endif %}
+                                    {% if current_user.language == 'en' %}Inglés{% endif %}
+                                    {% if current_user.language == 'fr' %}Francés{% endif %}
+                                </p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small">Última actividad</label>
+                                <p class="fw-bold mb-0">{{ current_user.last_active.strftime('%d/%m/%Y %H:%M') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Estadísticas detalladas -->
+            <section id="estadisticas" class="mb-4" data-aos="fade-up">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-transparent border-0 pt-4 px-4">
+                        <h4 class="fw-bold mb-0">
+                            <i class="bi bi-graph-up text-success me-2"></i>
+                            Estadísticas detalladas
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Tarjetas de estadísticas -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3 col-6">
+                                <div class="card bg-primary bg-opacity-10 border-0">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="fw-bold mb-1">{{ stats.total_exercises }}</h3>
+                                        <small class="text-muted">Ejercicios</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="card bg-success bg-opacity-10 border-0">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="fw-bold mb-1">{{ "%.1f"|format(stats.accuracy) }}%</h3>
+                                        <small class="text-muted">Precisión</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="card bg-warning bg-opacity-10 border-0">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="fw-bold mb-1">{{ progress.practice_sessions }}</h3>
+                                        <small class="text-muted">Sesiones</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="card bg-info bg-opacity-10 border-0">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="fw-bold mb-1">{{ (progress.total_time_spent / 3600)|round(1) }}</h3>
+                                        <small class="text-muted">Horas</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Gráfico de actividad -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3">Actividad de los últimos 30 días</h6>
+                            <canvas id="activityChart" height="200"></canvas>
+                        </div>
+                        
+                        <!-- Estadísticas por tipo de ejercicio -->
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <h6 class="fw-bold mb-2">Transformación</h6>
+                                <div class="progress mb-2" style="height: 20px;">
+                                    <div class="progress-bar bg-success" 
+                                         style="width: {{ progress.get_type_accuracy('transformacion') }}%">
+                                        {{ progress.get_type_accuracy('transformacion') }}%
+                                    </div>
+                                </div>
+                                <small class="text-muted">
+                                    {{ progress.transformacion_correct }}/{{ progress.transformacion_attempts }} correctos
+                                </small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <h6 class="fw-bold mb-2">Completar</h6>
+                                <div class="progress mb-2" style="height: 20px;">
+                                    <div class="progress-bar bg-info" 
+                                         style="width: {{ progress.get_type_accuracy('completar') }}%">
+                                        {{ progress.get_type_accuracy('completar') }}%
+                                    </div>
+                                </div>
+                                <small class="text-muted">
+                                    {{ progress.completar_correct }}/{{ progress.completar_attempts }} correctos
+                                </small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <h6 class="fw-bold mb-2">Identificar</h6>
+                                <div class="progress mb-2" style="height: 20px;">
+                                    <div class="progress-bar bg-warning" 
+                                         style="width: {{ progress.get_type_accuracy('identificar') }}%">
+                                        {{ progress.get_type_accuracy('identificar') }}%
+                                    </div>
+                                </div>
+                                <small class="text-muted">
+                                    {{ progress.identificar_correct }}/{{ progress.identificar_attempts }} correctos
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Logros obtenidos -->
+            <section id="logros" class="mb-4" data-aos="fade-up">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-transparent border-0 pt-4 px-4">
+                        <h4 class="fw-bold mb-0">
+                            <i class="bi bi-trophy text-warning me-2"></i>
+                            Logros obtenidos
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if unlocked %}
+                        <div class="row g-3">
+                            {% for item in unlocked %}
+                            <div class="col-md-4 col-6">
+                                <div class="card h-100 border-0 bg-light achievement-card" 
+                                     data-bs-toggle="tooltip"
+                                     title="{{ item.achievement.description }}">
+                                    <div class="card-body text-center p-3">
+                                        <i class="bi {{ item.achievement.icon }} display-6 text-{{ item.achievement.badge_color }} mb-2"></i>
+                                        <h6 class="fw-bold small mb-1">{{ item.achievement.name }}</h6>
+                                        <small class="text-muted">{{ item.unlocked_at.strftime('%d/%m/%Y') }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-trophy display-4 text-muted mb-3"></i>
+                            <p class="text-muted">Aún no has desbloqueado logros. ¡Sigue practicando!</p>
+                            <a href="{{ url_for('ejercicios') }}" class="btn btn-primary btn-sm">
+                                Comenzar a practicar
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Actividad reciente -->
+            <section id="actividad" class="mb-4" data-aos="fade-up">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-transparent border-0 pt-4 px-4">
+                        <h4 class="fw-bold mb-0">
+                            <i class="bi bi-clock-history text-info me-2"></i>
+                            Actividad reciente
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if recent %}
+                        <div class="timeline">
+                            {% for exercise in recent %}
+                            <div class="timeline-item pb-3">
+                                <div class="d-flex">
+                                    <div class="timeline-icon me-3">
+                                        {% if exercise.correct %}
+                                        <i class="bi bi-check-circle-fill text-success"></i>
+                                        {% else %}
+                                        <i class="bi bi-x-circle-fill text-danger"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between">
+                                            <h6 class="fw-bold mb-1">{{ exercise.exercise_type|capitalize }}</h6>
+                                            <small class="text-muted">{{ exercise.completed_at.strftime('%H:%M') }}</small>
+                                        </div>
+                                        <p class="small text-muted mb-1">
+                                            Ejercicio #{{ exercise.exercise_id }}
+                                        </p>
+                                        <div>
+                                            <span class="badge bg-light text-dark me-2">
+                                                <i class="bi bi-star-fill text-warning me-1"></i>{{ exercise.stars_earned }}
+                                            </span>
+                                            <span class="badge bg-light text-dark">
+                                                <i class="bi bi-trophy me-1"></i>+{{ exercise.points_earned }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center py-3">No hay actividad reciente</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Configuración -->
+            <section id="configuracion" class="mb-4" data-aos="fade-up">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-transparent border-0 pt-4 px-4">
+                        <h4 class="fw-bold mb-0">
+                            <i class="bi bi-gear text-secondary me-2"></i>
+                            Configuración
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="configForm">
+                            <!-- Metas diarias -->
+                            <h6 class="fw-bold mb-3">Metas de aprendizaje</h6>
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Meta diaria (ejercicios)</label>
+                                    <input type="number" class="form-control" id="dailyGoal" 
+                                           value="{{ progress.daily_goal }}" min="1" max="50">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Meta semanal (ejercicios)</label>
+                                    <input type="number" class="form-control" id="weeklyGoal" 
+                                           value="{{ progress.weekly_goal }}" min="5" max="200">
+                                </div>
+                            </div>
+                            
+                            <!-- Notificaciones -->
+                            <h6 class="fw-bold mb-3">Notificaciones</h6>
+                            <div class="mb-4">
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                    <label class="form-check-label" for="emailNotifications">
+                                        Recibir notificaciones por email
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="achievementNotifications" checked>
+                                    <label class="form-check-label" for="achievementNotifications">
+                                        Notificaciones de logros
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="weeklyReport" checked>
+                                    <label class="form-check-label" for="weeklyReport">
+                                        Recibir informe semanal de progreso
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Privacidad -->
+                            <h6 class="fw-bold mb-3">Privacidad</h6>
+                            <div class="mb-4">
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="publicProfile">
+                                    <label class="form-check-label" for="publicProfile">
+                                        Perfil público (visible en ranking)
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="shareProgress">
+                                    <label class="form-check-label" for="shareProgress">
+                                        Compartir progreso en redes sociales
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button type="button" class="btn btn-primary" onclick="saveConfig()">
+                                <i class="bi bi-check-circle me-2"></i>Guardar configuración
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Exportar datos -->
+            <section id="exportar" class="mb-4" data-aos="fade-up">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-transparent border-0 pt-4 px-4">
+                        <h4 class="fw-bold mb-0">
+                            <i class="bi bi-download text-danger me-2"></i>
+                            Exportar datos
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <p class="text-muted mb-3">
+                            Puedes exportar todos tus datos de aprendizaje en diferentes formatos.
+                        </p>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="exportData('json')">
+                                <i class="bi bi-file-code me-2"></i>JSON
+                            </button>
+                            <button class="btn btn-outline-success" onclick="exportData('csv')">
+                                <i class="bi bi-file-spreadsheet me-2"></i>CSV
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="exportData('pdf')">
+                                <i class="bi bi-file-pdf me-2"></i>PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Perfil -->
+<div class="modal fade" id="editProfileModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-pencil me-2"></i>
+                    Editar perfil
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editProfileForm">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre de usuario</label>
+                        <input type="text" class="form-control" id="editUsername" value="{{ current_user.username }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="editEmail" value="{{ current_user.email }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Idioma</label>
+                        <select class="form-select" id="editLanguage">
+                            <option value="es" {% if current_user.language == 'es' %}selected{% endif %}>Español</option>
+                            <option value="en" {% if current_user.language == 'en' %}selected{% endif %}>Inglés</option>
+                            <option value="fr" {% if current_user.language == 'fr' %}selected{% endif %}>Francés</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cambiar contraseña (dejar en blanco para mantener)</label>
+                        <input type="password" class="form-control" id="editPassword" placeholder="Nueva contraseña">
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" id="editConfirmPassword" placeholder="Confirmar nueva contraseña">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="saveProfile()">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirmar Eliminación -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Eliminar cuenta
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.</p>
+                <p class="text-danger"><strong>Todos tus datos serán eliminados permanentemente.</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="deleteAccount()">Eliminar cuenta</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos para la línea de tiempo */
+.timeline {
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.timeline-item {
+    position: relative;
+    border-left: 2px solid #e9ecef;
+    padding-left: 1.5rem;
+}
+
+.timeline-item:last-child {
+    border-left-color: transparent;
+}
+
+.timeline-icon {
+    position: absolute;
+    left: -0.75rem;
+    background-color: white;
+    padding: 0.25rem;
+}
+
+/* Tarjetas de logros */
+.achievement-card {
+    transition: transform 0.3s ease;
+    cursor: help;
+}
+
+.achievement-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Badges de color */
+.text-bronze { color: #cd7f32; }
+.text-silver { color: #c0c0c0; }
+.text-gold { color: #ffd700; }
+
+/* Animaciones */
+.sticky-top {
+    top: 80px;
+    z-index: 1010;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sticky-top {
+        position: relative !important;
+        top: 0 !important;
+    }
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Variables globales
+let activityChart = null;
+
+// Inicializar gráfico
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('activityChart').getContext('2d');
+    
+    activityChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ stats.daily|map(attribute='date')|list|tojson }},
+            datasets: [{
+                label: 'Ejercicios completados',
+                data: {{ stats.daily|map(attribute='exercises')|list|tojson }},
+                borderColor: '#3498db',
+                backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }, {
+                label: 'Puntos obtenidos',
+                data: {{ stats.daily|map(attribute='points')|list|tojson }},
+                borderColor: '#2ecc71',
+                backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+                yAxisID: 'y1'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    enabled: true
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Ejercicios'
+                    }
+                },
+                y1: {
+                    beginAtZero: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Puntos'
+                    },
+                    grid: {
+                        drawOnChartArea: false
+                    }
+                }
+            }
+        }
+    });
+});
+
+// Vista previa de avatar
+function previewAvatar(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('profileAvatar').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+        
+        // Simular carga
+        setTimeout(() => {
+            alert('Avatar actualizado correctamente (simulado)');
+        }, 1000);
+    }
+}
+
+// Editar perfil
+function editProfile() {
+    const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+    modal.show();
+}
+
+function saveProfile() {
+    const username = document.getElementById('editUsername').value;
+    const email = document.getElementById('editEmail').value;
+    const language = document.getElementById('editLanguage').value;
+    const password = document.getElementById('editPassword').value;
+    const confirm = document.getElementById('editConfirmPassword').value;
+    
+    if (password && password !== confirm) {
+        alert('Las contraseñas no coinciden');
+        return;
+    }
+    
+    // Simular guardado
+    alert('Perfil actualizado correctamente (simulado)');
+    bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+}
+
+// Guardar configuración
+function saveConfig() {
+    const dailyGoal = document.getElementById('dailyGoal').value;
+    const weeklyGoal = document.getElementById('weeklyGoal').value;
+    
+    fetch('/api/perfil/actualizar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            daily_goal: parseInt(dailyGoal),
+            weekly_goal: parseInt(weeklyGoal)
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            alert('Configuración guardada correctamente');
+        }
+    });
+}
+
+// Confirmar eliminación
+function confirmDelete() {
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    modal.show();
+}
+
+function deleteAccount() {
+    if(confirm('¿Estás absolutamente seguro? Esta acción no se puede deshacer.')) {
+        alert('Cuenta eliminada (simulado). En una implementación real, serías redirigido.');
+        window.location.href = "{{ url_for('logout') }}";
+    }
+}
+
+// Exportar datos
+function exportData(format) {
+    alert(`Exportando datos en formato ${format}... (simulado)`);
+    
+    // Simular descarga
+    const data = {
+        usuario: "{{ current_user.username }}",
+        puntos: {{ current_user.total_score }},
+        estrellas: {{ current_user.total_stars }},
+        nivel: {{ current_user.level }}
+    };
+    
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `comunicapro_${new Date().toISOString()}.json`;
+    a.click();
+}
+
+// Inicializar tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltips.forEach(tooltip => new bootstrap.Tooltip(tooltip));
+});
+</script>
+{% endblock %}

@@ -1,0 +1,465 @@
+{% extends "base.html" %}
+
+{% block title %}Comunicación Asertiva - Inicio{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-75 py-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <h1 class="display-3 fw-bold mb-4">
+                    <span class="text-white">Comunicación</span>
+                    <span class="text-warning">Asertiva</span>
+                </h1>
+                <p class="lead text-white mb-4">
+                    Aprende a expresar tus ideas, sentimientos y necesidades de manera clara, 
+                    directa y respetuosa. Mejora tus relaciones personales y profesionales.
+                </p>
+                <div class="d-flex gap-3">
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('practica') }}" class="btn btn-warning btn-lg">
+                        <i class="bi bi-lightning-charge me-2"></i>Práctica recomendada
+                    </a>
+                    <a href="{{ url_for('ejercicios') }}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-pencil-square me-2"></i>Ejercicios
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('registro') }}" class="btn btn-warning btn-lg">
+                        <i class="bi bi-person-plus me-2"></i>Comenzar ahora
+                    </a>
+                    <a href="{{ url_for('teoria') }}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-book me-2"></i>Ver teoría
+                    </a>
+                    {% endif %}
+                </div>
+                
+                <!-- Estadísticas rápidas -->
+                <div class="row mt-5 text-white">
+                    <div class="col-4">
+                        <div class="stat-item">
+                            <h3 class="fw-bold mb-0">100+</h3>
+                            <small>Ejercicios</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-item">
+                            <h3 class="fw-bold mb-0">50</h3>
+                            <small>Flashcards</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-item">
+                            <h3 class="fw-bold mb-0">15</h3>
+                            <small>Logros</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="hero-image text-center">
+                    <img src="https://via.placeholder.com/500x400/3498db/ffffff?text=Comunicación+Asertiva" 
+                         alt="Comunicación Asertiva" class="img-fluid rounded-4 shadow-lg">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Características principales -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold mb-3">¿Por qué elegir ComunicaPro?</h2>
+            <p class="lead text-muted">Una plataforma completa para dominar la comunicación asertiva</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" 
+                             style="width: 80px; height: 80px;">
+                            <i class="bi bi-book fs-1"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Teoría completa</h4>
+                        <p class="text-muted">
+                            Aprende los fundamentos de la comunicación asertiva con explicaciones claras, 
+                            ejemplos prácticos y técnicas probadas.
+                        </p>
+                        <a href="{{ url_for('teoria') }}" class="btn btn-outline-primary mt-3">
+                            Ver teoría <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-success bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" 
+                             style="width: 80px; height: 80px;">
+                            <i class="bi bi-pencil-square fs-1"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Ejercicios interactivos</h4>
+                        <p class="text-muted">
+                            Practica con 100 ejercicios de transformación, completar e identificación. 
+                            Recibe feedback inmediato y gana puntos.
+                        </p>
+                        <a href="{{ url_for('ejercicios') }}" class="btn btn-outline-success mt-3">
+                            Practicar <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-info bg-gradient text-white rounded-circle mb-4 mx-auto d-flex align-items-center justify-content-center" 
+                             style="width: 80px; height: 80px;">
+                            <i class="bi bi-card-list fs-1"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Flashcards de estudio</h4>
+                        <p class="text-muted">
+                            Repasa conceptos clave con 50 flashcards. Sistema de repaso espaciado 
+                            para un aprendizaje efectivo.
+                        </p>
+                        <a href="{{ url_for('flashcards') }}" class="btn btn-outline-info mt-3">
+                            Estudiar <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cómo funciona -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold mb-3">Cómo funciona</h2>
+            <p class="lead text-muted">Cuatro pasos simples para dominar la comunicación asertiva</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="text-center position-relative">
+                    <div class="step-number bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" 
+                         style="width: 60px; height: 60px; font-size: 24px; font-weight: bold;">1</div>
+                    <h5 class="fw-bold mb-2">Aprende la teoría</h5>
+                    <p class="text-muted">Comprende los fundamentos y técnicas de la comunicación asertiva</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="text-center position-relative">
+                    <div class="step-number bg-success text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" 
+                         style="width: 60px; height: 60px; font-size: 24px; font-weight: bold;">2</div>
+                    <h5 class="fw-bold mb-2">Practica ejercicios</h5>
+                    <p class="text-muted">Aplica lo aprendido con ejercicios interactivos de diferentes tipos</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="text-center position-relative">
+                    <div class="step-number bg-warning text-dark rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" 
+                         style="width: 60px; height: 60px; font-size: 24px; font-weight: bold;">3</div>
+                    <h5 class="fw-bold mb-2">Gana puntos y logros</h5>
+                    <p class="text-muted">Acumula puntos, estrellas y desbloquea logros mientras avanzas</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+                <div class="text-center">
+                    <div class="step-number bg-danger text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" 
+                         style="width: 60px; height: 60px; font-size: 24px; font-weight: bold;">4</div>
+                    <h5 class="fw-bold mb-2">Mide tu progreso</h5>
+                    <p class="text-muted">Visualiza tu evolución con gráficos y estadísticas detalladas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Beneficios -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <img src="https://via.placeholder.com/600x400/2ecc71/ffffff?text=Beneficios" 
+                     alt="Beneficios" class="img-fluid rounded-4 shadow-lg">
+            </div>
+            
+            <div class="col-lg-6" data-aos="fade-left">
+                <h2 class="display-5 fw-bold mb-4">Beneficios de la comunicación asertiva</h2>
+                
+                <div class="d-flex mb-4">
+                    <div class="benefit-icon bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                        <i class="bi bi-people-fill fs-4 text-primary"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold">Mejora tus relaciones</h5>
+                        <p class="text-muted">Establece vínculos más auténticos y saludables con los demás</p>
+                    </div>
+                </div>
+                
+                <div class="d-flex mb-4">
+                    <div class="benefit-icon bg-success bg-opacity-10 rounded-circle p-3 me-3">
+                        <i class="bi bi-emoji-smile fs-4 text-success"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold">Reduce el estrés</h5>
+                        <p class="text-muted">Expresa lo que sientes sin ansiedad ni frustración acumulada</p>
+                    </div>
+                </div>
+                
+                <div class="d-flex mb-4">
+                    <div class="benefit-icon bg-warning bg-opacity-10 rounded-circle p-3 me-3">
+                        <i class="bi bi-trophy fs-4 text-warning"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold">Aumenta tu confianza</h5>
+                        <p class="text-muted">Desarrolla seguridad al expresar tus ideas y defender tus derechos</p>
+                    </div>
+                </div>
+                
+                <div class="d-flex mb-4">
+                    <div class="benefit-icon bg-info bg-opacity-10 rounded-circle p-3 me-3">
+                        <i class="bi bi-briefcase fs-4 text-info"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold">Éxito profesional</h5>
+                        <p class="text-muted">Mejora tu comunicación en el trabajo, negociaciones y liderazgo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonios -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold mb-3">Lo que dicen nuestros usuarios</h2>
+            <p class="lead text-muted">Miles de personas ya mejoraron su comunicación</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                        </div>
+                        <p class="mb-4">
+                            "Los ejercicios de transformación me ayudaron mucho a cambiar mi forma 
+                            de comunicarme en el trabajo. Ahora mis reuniones son más productivas."
+                        </p>
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/50x50" alt="Usuario" 
+                                 class="rounded-circle me-3" width="50" height="50">
+                            <div>
+                                <h6 class="fw-bold mb-0">María González</h6>
+                                <small class="text-muted">Gerente de proyectos</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                        </div>
+                        <p class="mb-4">
+                            "Las flashcards son geniales para repasar conceptos. El sistema de 
+                            logros me mantiene motivado a practicar todos los días."
+                        </p>
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/50x50" alt="Usuario" 
+                                 class="rounded-circle me-3" width="50" height="50">
+                            <div>
+                                <h6 class="fw-bold mb-0">Carlos Rodríguez</h6>
+                                <small class="text-muted">Estudiante de psicología</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                        </div>
+                        <p class="mb-4">
+                            "La sección de progreso me permite ver mi evolución. Ya mejoré mi 
+                            precisión de 60% a 85% en solo un mes."
+                        </p>
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/50x50" alt="Usuario" 
+                                 class="rounded-circle me-3" width="50" height="50">
+                            <div>
+                                <h6 class="fw-bold mb-0">Ana Martínez</h6>
+                                <small class="text-muted">Coach profesional</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Estadísticas globales -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="100">
+                <h2 class="display-3 fw-bold mb-2">10K+</h2>
+                <p class="lead mb-0">Usuarios activos</p>
+            </div>
+            <div class="col-md-3 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="200">
+                <h2 class="display-3 fw-bold mb-2">50K+</h2>
+                <p class="lead mb-0">Ejercicios realizados</p>
+            </div>
+            <div class="col-md-3 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="300">
+                <h2 class="display-3 fw-bold mb-2">15</h2>
+                <p class="lead mb-0">Logros disponibles</p>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+                <h2 class="display-3 fw-bold mb-2">95%</h2>
+                <p class="lead mb-0">Usuarios satisfechos</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5">
+    <div class="container">
+        <div class="card bg-gradient bg-dark text-white border-0 shadow-lg">
+            <div class="card-body p-5 text-center">
+                <h2 class="display-5 fw-bold mb-4" data-aos="fade-up">
+                    ¿Listo para mejorar tu comunicación?
+                </h2>
+                <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">
+                    Únete a miles de personas que ya están transformando su forma de comunicarse
+                </p>
+                <div data-aos="fade-up" data-aos-delay="200">
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('practica') }}" class="btn btn-warning btn-lg px-5 py-3">
+                        <i class="bi bi-lightning-charge me-2"></i>Comenzar práctica
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('registro') }}" class="btn btn-warning btn-lg px-5 py-3">
+                        <i class="bi bi-person-plus me-2"></i>Regístrate gratis
+                    </a>
+                    <p class="mt-3 text-white-50">
+                        <i class="bi bi-check-circle me-2"></i>Sin compromiso, cancela cuando quieras
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    color: white;
+    margin-top: -1.5rem;
+}
+
+.min-vh-75 {
+    min-height: 75vh;
+}
+
+.feature-icon {
+    transition: transform 0.3s ease;
+}
+
+.feature-icon:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.step-number {
+    transition: all 0.3s ease;
+}
+
+.step-number:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.benefit-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.benefit-icon:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.stat-item {
+    transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+}
+
+.card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important;
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        text-align: center;
+        padding: 3rem 0;
+    }
+    
+    .display-3 {
+        font-size: 2.5rem;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,768 @@
+{% extends "base.html" %}
+
+{% block title %}Teoría - Comunicación Asertiva{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center" data-aos="fade-up">
+                <h1 class="display-4 fw-bold mb-4">Fundamentos de la Comunicación Asertiva</h1>
+                <p class="lead mb-4">
+                    Aprende los principios básicos para expresarte con claridad, respeto y confianza
+                </p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="#introduccion" class="btn btn-light btn-lg">
+                        <i class="bi bi-book me-2"></i>Comenzar a leer
+                    </a>
+                    <a href="{{ url_for('ejercicios') }}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-pencil-square me-2"></i>Practicar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Barra de progreso de lectura -->
+<div class="progress reading-progress sticky-top" style="height: 4px;">
+    <div class="progress-bar bg-warning" id="readingProgress" style="width: 0%"></div>
+</div>
+
+<!-- Contenido principal -->
+<div class="container py-5">
+    <div class="row">
+        <!-- Índice lateral -->
+        <div class="col-lg-3 mb-4" data-aos="fade-right">
+            <div class="card shadow-sm sticky-top" style="top: 80px;">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold mb-3">
+                        <i class="bi bi-list-ul me-2"></i>Contenido
+                    </h5>
+                    <nav id="navbar-example3" class="nav nav-pills flex-column">
+                        <a class="nav-link" href="#introduccion">
+                            <i class="bi bi-chevron-right me-2"></i>Introducción
+                        </a>
+                        <a class="nav-link" href="#que-es">
+                            <i class="bi bi-chevron-right me-2"></i>¿Qué es?
+                        </a>
+                        <a class="nav-link" href="#estilos">
+                            <i class="bi bi-chevron-right me-2"></i>Estilos de comunicación
+                        </a>
+                        <a class="nav-link" href="#tecnicas">
+                            <i class="bi bi-chevron-right me-2"></i>Técnicas asertivas
+                        </a>
+                        <a class="nav-link" href="#barreras">
+                            <i class="bi bi-chevron-right me-2"></i>Barreras comunes
+                        </a>
+                        <a class="nav-link" href="#ejemplos">
+                            <i class="bi bi-chevron-right me-2"></i>Ejemplos prácticos
+                        </a>
+                        <a class="nav-link" href="#recursos">
+                            <i class="bi bi-chevron-right me-2"></i>Recursos adicionales
+                        </a>
+                    </nav>
+                    
+                    <!-- Mini test -->
+                    <hr class="my-4">
+                    <h6 class="fw-bold mb-3">¿Listo para practicar?</h6>
+                    <p class="small text-muted">Pon a prueba lo que has aprendido</p>
+                    <a href="{{ url_for('ejercicios') }}" class="btn btn-primary w-100">
+                        <i class="bi bi-pencil-square me-2"></i>Ir a ejercicios
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contenido principal -->
+        <div class="col-lg-9">
+            <!-- Introducción -->
+            <section id="introduccion" class="mb-5" data-aos="fade-up">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h2 class="fw-bold mb-4">
+                            <i class="bi bi-chat-quote text-primary me-3"></i>
+                            Introducción a la Comunicación Asertiva
+                        </h2>
+                        
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-8">
+                                <p class="lead">
+                                    La comunicación asertiva es una habilidad fundamental para 
+                                    establecer relaciones saludables, expresar nuestras necesidades 
+                                    y resolver conflictos de manera constructiva.
+                                </p>
+                                <p>
+                                    En un mundo donde la comunicación es clave, aprender a expresarnos 
+                                    asertivamente puede marcar la diferencia en nuestras relaciones 
+                                    personales, profesionales y familiares.
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="bg-light rounded-circle p-4 d-inline-block">
+                                    <i class="bi bi-megaphone display-1 text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Dato importante:</strong> Según estudios, el 70% de los conflictos 
+                            interpersonales se deben a problemas de comunicación, no a diferencias reales.
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- ¿Qué es la comunicación asertiva? -->
+            <section id="que-es" class="mb-5" data-aos="fade-up">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h2 class="fw-bold mb-4">
+                            <i class="bi bi-question-circle text-primary me-3"></i>
+                            ¿Qué es la Comunicación Asertiva?
+                        </h2>
+                        
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="bg-light p-4 rounded-4 mb-4">
+                                    <h5 class="fw-bold mb-3">Definición</h5>
+                                    <p>
+                                        La comunicación asertiva es la habilidad de expresar ideas, 
+                                        sentimientos y necesidades de manera clara, directa y respetuosa, 
+                                        considerando los derechos propios y ajenos, sin agredir ni 
+                                        someterse a la voluntad de otros.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="bg-light p-4 rounded-4 mb-4">
+                                    <h5 class="fw-bold mb-3">Características</h5>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                            Expresión clara y directa
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                            Respeto por uno mismo y los demás
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                            Lenguaje corporal congruente
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                            Capacidad de decir "no" sin culpa
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 border-0 bg-primary bg-opacity-10">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-emoji-smile display-4 text-primary mb-3"></i>
+                                        <h6 class="fw-bold">Autoestima</h6>
+                                        <p class="small">Mejora la confianza en uno mismo</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 border-0 bg-success bg-opacity-10">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-people display-4 text-success mb-3"></i>
+                                        <h6 class="fw-bold">Relaciones</h6>
+                                        <p class="small">Fortalece vínculos interpersonales</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 border-0 bg-warning bg-opacity-10">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-trophy display-4 text-warning mb-3"></i>
+                                        <h6 class="fw-bold">Éxito</h6>
+                                        <p class="small">Facilita logros profesionales</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Estilos de comunicación -->
+            <section id="estilos" class="mb-5" data-aos="fade-up">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h2 class="fw-bold mb-4">
+                            <i class="bi bi-diagram-3 text-primary me-3"></i>
+                            Estilos de Comunicación
+                        </h2>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-header bg-danger text-white text-center py-3">
+                                        <i class="bi bi-exclamation-triangle display-6"></i>
+                                        <h5 class="mt-2 mb-0">Agresivo</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2">
+                                                <i class="bi bi-x-circle text-danger me-2"></i>
+                                                Impone sus ideas
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-x-circle text-danger me-2"></i>
+                                                No respeta a los demás
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-x-circle text-danger me-2"></i>
+                                                Genera conflictos
+                                            </li>
+                                        </ul>
+                                        <div class="bg-light p-3 rounded mt-3">
+                                            <small class="text-muted">Ejemplo:</small>
+                                            <p class="mb-0 fst-italic">"Hazlo como yo digo"</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-header bg-secondary text-white text-center py-3">
+                                        <i class="bi bi-dash-circle display-6"></i>
+                                        <h5 class="mt-2 mb-0">Pasivo</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2">
+                                                <i class="bi bi-x-circle text-secondary me-2"></i>
+                                                No expresa necesidades
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-x-circle text-secondary me-2"></i>
+                                                Se somete a los demás
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-x-circle text-secondary me-2"></i>
+                                                Acumula resentimiento
+                                            </li>
+                                        </ul>
+                                        <div class="bg-light p-3 rounded mt-3">
+                                            <small class="text-muted">Ejemplo:</small>
+                                            <p class="mb-0 fst-italic">"Lo que tú quieras"</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-header bg-success text-white text-center py-3">
+                                        <i class="bi bi-check-circle display-6"></i>
+                                        <h5 class="mt-2 mb-0">Asertivo</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                                Expresa con claridad
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                                Respeta a todos
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                                Busca soluciones
+                                            </li>
+                                        </ul>
+                                        <div class="bg-light p-3 rounded mt-3">
+                                            <small class="text-muted">Ejemplo:</small>
+                                            <p class="mb-0 fst-italic">"¿Qué te parece si...?"</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tabla comparativa -->
+                        <div class="table-responsive mt-4">
+                            <table class="table table-bordered">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Situación</th>
+                                        <th>Pasivo</th>
+                                        <th>Agresivo</th>
+                                        <th>Asertivo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Ante un error</td>
+                                        <td class="bg-light">"No importa"</td>
+                                        <td class="bg-light">"Fue tu culpa"</td>
+                                        <td class="bg-success bg-opacity-25">"Revisemos qué pasó"</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pedir ayuda</td>
+                                        <td class="bg-light">"Disculpa..."</td>
+                                        <td class="bg-light">"Necesito esto ya"</td>
+                                        <td class="bg-success bg-opacity-25">"¿Podrías ayudarme?"</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Decir que no</td>
+                                        <td class="bg-light">"Bueno, está bien"</td>
+                                        <td class="bg-light">"No, y no insistas"</td>
+                                        <td class="bg-success bg-opacity-25">"No puedo ahora"</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Técnicas asertivas -->
+            <section id="tecnicas" class="mb-5" data-aos="fade-up">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h2 class="fw-bold mb-4">
+                            <i class="bi bi-tools text-primary me-3"></i>
+                            Técnicas de Comunicación Asertiva
+                        </h2>
+                        
+                        <div class="accordion" id="accordionTecnicas">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                                        <i class="bi bi-arrow-repeat me-3 text-primary"></i>
+                                        Técnica del disco rayado
+                                    </button>
+                                </h2>
+                                <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#accordionTecnicas">
+                                    <div class="accordion-body">
+                                        <p>Consiste en repetir el mismo mensaje con calma una y otra vez, sin entrar en discusiones ni desviarse del tema.</p>
+                                        <div class="bg-light p-3 rounded mt-2">
+                                            <strong>Ejemplo:</strong> "Entiendo, pero necesito que entregues el informe hoy" (repetir)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                                        <i class="bi bi-cloud-fog2 me-3 text-primary"></i>
+                                        Banco de niebla
+                                    </button>
+                                </h2>
+                                <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#accordionTecnicas">
+                                    <div class="accordion-body">
+                                        <p>Reconocer la crítica sin aceptarla completamente, como si fuera una nube que pasa.</p>
+                                        <div class="bg-light p-3 rounded mt-2">
+                                            <strong>Ejemplo:</strong> "Puede que tengas razón en parte, pero yo lo veo diferente"
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                                        <i class="bi bi-person me-3 text-primary"></i>
+                                        Mensajes "yo"
+                                    </button>
+                                </h2>
+                                <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#accordionTecnicas">
+                                    <div class="accordion-body">
+                                        <p>Expresar desde la propia experiencia sin acusar al otro.</p>
+                                        <div class="bg-light p-3 rounded mt-2">
+                                            <strong>Ejemplo:</strong> "Yo me siento frustrado cuando no recibo respuesta"
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">
+                                        <i class="bi bi-question-circle me-3 text-primary"></i>
+                                        Preguntas asertivas
+                                    </button>
+                                </h2>
+                                <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#accordionTecnicas">
+                                    <div class="accordion-body">
+                                        <p>Hacer preguntas para obtener información y clarificar la situación.</p>
+                                        <div class="bg-light p-3 rounded mt-2">
+                                            <strong>Ejemplo:</strong> "¿Qué necesitas específicamente para completar esto?"
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Barreras comunes -->
+            <section id="barreras" class="mb-5" data-aos="fade-up">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h2 class="fw-bold mb-4">
+                            <i class="bi bi-shield-exclamation text-primary me-3"></i>
+                            Barreras de la Comunicación
+                        </h2>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-0 bg-danger bg-opacity-10">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold">
+                                            <i class="bi bi-megaphone text-danger me-2"></i>
+                                            Gritar o alzar la voz
+                                        </h5>
+                                        <p class="small">Activa la defensividad y cierra el diálogo</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-0 bg-danger bg-opacity-10">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold">
+                                            <i class="bi bi-tag text-danger me-2"></i>
+                                            Etiquetar a la persona
+                                        </h5>
+                                        <p class="small">"Eres un irresponsable" en lugar de hablar del comportamiento</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-0 bg-danger bg-opacity-10">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold">
+                                            <i class="bi bi-infinity text-danger me-2"></i>
+                                            Generalizar
+                                        </h5>
+                                        <p class="small">"Siempre llegas tarde", "Nunca me escuchas"</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-0 bg-danger bg-opacity-10">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold">
+                                            <i class="bi bi-emoji-frown text-danger me-2"></i>
+                                            Minimizar emociones
+                                        </h5>
+                                        <p class="small">"No es para tanto", "Exageras"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning mt-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Consejo:</strong> Identifica estas barreras en tu comunicación diaria 
+                            para comenzar a eliminarlas.
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Ejemplos prácticos -->
+            <section id="ejemplos" class="mb-5" data-aos="fade-up">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h2 class="fw-bold mb-4">
+                            <i class="bi bi-file-text text-primary me-3"></i>
+                            Ejemplos Prácticos
+                        </h2>
+                        
+                        <div class="row">
+                            <div class="col-lg-6 mb-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-header bg-danger text-white">
+                                        <i class="bi bi-x-circle me-2"></i>
+                                        Frase no asertiva
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="mb-3">"Deja de cometer errores"</p>
+                                        <div class="bg-light p-3 rounded">
+                                            <i class="bi bi-arrow-down text-danger"></i>
+                                        </div>
+                                        <div class="mt-3">
+                                            <span class="badge bg-success">Versión asertiva</span>
+                                            <p class="mt-2 fw-bold text-success">
+                                                "Podríamos revisar los pasos para mejorar"
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6 mb-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-header bg-danger text-white">
+                                        <i class="bi bi-x-circle me-2"></i>
+                                        Frase no asertiva
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="mb-3">"Eso no es mi problema"</p>
+                                        <div class="bg-light p-3 rounded">
+                                            <i class="bi bi-arrow-down text-danger"></i>
+                                        </div>
+                                        <div class="mt-3">
+                                            <span class="badge bg-success">Versión asertiva</span>
+                                            <p class="mt-2 fw-bold text-success">
+                                                "¿En qué puedo apoyarte para resolverlo?"
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6 mb-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-header bg-danger text-white">
+                                        <i class="bi bi-x-circle me-2"></i>
+                                        Frase no asertiva
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="mb-3">"Siempre llegas tarde"</p>
+                                        <div class="bg-light p-3 rounded">
+                                            <i class="bi bi-arrow-down text-danger"></i>
+                                        </div>
+                                        <div class="mt-3">
+                                            <span class="badge bg-success">Versión asertiva</span>
+                                            <p class="mt-2 fw-bold text-success">
+                                                "Me preocupa la puntualidad, ¿podemos buscar una solución?"
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6 mb-4">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-header bg-danger text-white">
+                                        <i class="bi bi-x-circle me-2"></i>
+                                        Frase no asertiva
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="mb-3">"Esa idea es tonta"</p>
+                                        <div class="bg-light p-3 rounded">
+                                            <i class="bi bi-arrow-down text-danger"></i>
+                                        </div>
+                                        <div class="mt-3">
+                                            <span class="badge bg-success">Versión asertiva</span>
+                                            <p class="mt-2 fw-bold text-success">
+                                                "Interesante propuesta, ¿qué tal si exploramos otras opciones?"
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <a href="{{ url_for('ejercicios') }}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-pencil-square me-2"></i>
+                                Practicar con más ejemplos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Recursos adicionales -->
+            <section id="recursos" class="mb-5" data-aos="fade-up">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h2 class="fw-bold mb-4">
+                            <i class="bi bi-collection text-primary me-3"></i>
+                            Recursos Adicionales
+                        </h2>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 border-0 text-center">
+                                    <div class="card-body">
+                                        <i class="bi bi-card-list display-1 text-info mb-3"></i>
+                                        <h5 class="fw-bold">Flashcards</h5>
+                                        <p class="small">Repasa conceptos clave con nuestro sistema de flashcards</p>
+                                        <a href="{{ url_for('flashcards') }}" class="btn btn-outline-info btn-sm">
+                                            Estudiar <i class="bi bi-arrow-right ms-2"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 border-0 text-center">
+                                    <div class="card-body">
+                                        <i class="bi bi-pencil-square display-1 text-success mb-3"></i>
+                                        <h5 class="fw-bold">Ejercicios</h5>
+                                        <p class="small">Practica con 100 ejercicios interactivos</p>
+                                        <a href="{{ url_for('ejercicios') }}" class="btn btn-outline-success btn-sm">
+                                            Practicar <i class="bi bi-arrow-right ms-2"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 border-0 text-center">
+                                    <div class="card-body">
+                                        <i class="bi bi-trophy display-1 text-warning mb-3"></i>
+                                        <h5 class="fw-bold">Logros</h5>
+                                        <p class="small">Gana logros mientras aprendes</p>
+                                        <a href="{{ url_for('logros') }}" class="btn btn-outline-warning btn-sm">
+                                            Ver logros <i class="bi bi-arrow-right ms-2"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Descargar guía PDF (simulado) -->
+            <section class="mb-5" data-aos="fade-up">
+                <div class="card bg-primary text-white">
+                    <div class="card-body p-5 text-center">
+                        <i class="bi bi-file-pdf display-1 mb-3"></i>
+                        <h3 class="fw-bold mb-3">Guía rápida de comunicación asertiva</h3>
+                        <p class="mb-4">Descarga nuestra guía con los conceptos clave para tener siempre a mano</p>
+                        <button class="btn btn-light btn-lg" onclick="showPdfMessage()">
+                            <i class="bi bi-download me-2"></i>
+                            Descargar PDF (simulado)
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+
+<!-- Botón para volver arriba -->
+<button onclick="scrollToTop()" id="btnTop" class="btn btn-primary rounded-circle position-fixed" 
+        style="bottom: 20px; right: 20px; width: 50px; height: 50px; display: none;">
+    <i class="bi bi-arrow-up"></i>
+</button>
+
+<style>
+.reading-progress {
+    z-index: 1020;
+}
+
+#navbar-example3 .nav-link {
+    color: #495057;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s;
+}
+
+#navbar-example3 .nav-link:hover {
+    background-color: #e9ecef;
+}
+
+#navbar-example3 .nav-link.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #e8f4f8;
+    color: var(--primary-color);
+}
+
+#btnTop {
+    display: none;
+    z-index: 1030;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+#btnTop:hover {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    #navbar-example3 {
+        position: relative !important;
+        top: 0 !important;
+        margin-bottom: 2rem;
+    }
+}
+</style>
+
+<script>
+// Barra de progreso de lectura
+window.addEventListener('scroll', function() {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    document.getElementById('readingProgress').style.width = scrolled + '%';
+    
+    // Botón volver arriba
+    const btnTop = document.getElementById('btnTop');
+    if (winScroll > 300) {
+        btnTop.style.display = 'block';
+    } else {
+        btnTop.style.display = 'none';
+    }
+});
+
+// Función para volver arriba
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+// Mensaje simulado de descarga PDF
+function showPdfMessage() {
+    alert('En una versión completa, aquí se descargaría la guía en PDF. Por ahora, ¡sigue practicando con nuestros ejercicios!');
+}
+
+// Activar enlaces del índice según scroll
+document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('#navbar-example3 .nav-link');
+    
+    window.addEventListener('scroll', function() {
+        let current = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 100;
+            const sectionHeight = section.clientHeight;
+            if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + current) {
+                link.classList.add('active');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

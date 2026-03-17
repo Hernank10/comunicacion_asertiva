@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+
+{% block title %}Ejercicios - Comunicación Asertiva{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12 text-center" data-aos="fade-down">
+            <h1 class="display-5 fw-bold mb-3">
+                <i class="bi bi-pencil-square text-primary me-3"></i>
+                Ejercicios Interactivos
+            </h1>
+            <p class="lead text-muted">
+                Practica con diferentes tipos de ejercicios para mejorar tu comunicación asertiva
+            </p>
+        </div>
+    </div>
+
+    <!-- Tarjetas de tipos de ejercicio -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card h-100 border-0 shadow-hover">
+                <div class="card-body text-center p-4">
+                    <div class="exercise-icon bg-primary bg-opacity-10 rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                         style="width: 80px; height: 80px;">
+                        <i class="bi bi-arrow-repeat fs-1 text-primary"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Transformación</h4>
+                    <p class="text-muted mb-4">
+                        Convierte frases directas o agresivas en expresiones amables y asertivas.
+                    </p>
+                    <div class="d-flex justify-content-center gap-2 mb-3">
+                        <span class="badge bg-primary">30 ejercicios</span>
+                        <span class="badge bg-info">Intermedio</span>
+                    </div>
+                    <button class="btn btn-primary w-100" onclick="startExercise('transformacion')">
+                        <i class="bi bi-play-circle me-2"></i>Comenzar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="card h-100 border-0 shadow-hover">
+                <div class="card-body text-center p-4">
+                    <div class="exercise-icon bg-success bg-opacity-10 rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                         style="width: 80px; height: 80px;">
+                        <i class="bi bi-pencil-square fs-1 text-success"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Completar</h4>
+                    <p class="text-muted mb-4">
+                        Completa frases incompletas con las palabras o expresiones adecuadas.
+                    </p>
+                    <div class="d-flex justify-content-center gap-2 mb-3">
+                        <span class="badge bg-success">30 ejercicios</span>
+                        <span class="badge bg-info">Básico</span>
+                    </div>
+                    <button class="btn btn-success w-100" onclick="startExercise('completar')">
+                        <i class="bi bi-play-circle me-2"></i>Comenzar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="card h-100 border-0 shadow-hover">
+                <div class="card-body text-center p-4">
+                    <div class="exercise-icon bg-warning bg-opacity-10 rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                         style="width: 80px; height: 80px;">
+                        <i class="bi bi-search fs-1 text-warning"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Identificar</h4>
+                    <p class="text-muted mb-4">
+                        Identifica elementos problemáticos en frases poco asertivas.
+                    </p>
+                    <div class="d-flex justify-content-center gap-2 mb-3">
+                        <span class="badge bg-warning text-dark">30 ejercicios</span>
+                        <span class="badge bg-info">Avanzado</span>
+                    </div>
+                    <button class="btn btn-warning w-100" onclick="startExercise('identificar')">
+                        <i class="bi bi-play-circle me-2"></i>Comenzar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros y estadísticas -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <h6 class="fw-bold mb-2">
+                                <i class="bi bi-funnel me-2 text-primary"></i>Filtrar por dificultad
+                            </h6>
+                            <div class="btn-group w-100">
+                                <button class="btn btn-outline-primary active" onclick="filterDifficulty('all')">Todos</button>
+                                <button class="btn btn-outline-success" onclick="filterDifficulty('facil')">Fácil</button>
+                                <button class="btn btn-outline-warning" onclick="filterDifficulty('media')">Media</button>
+                                <button class="btn btn-outline-danger" onclick="filterDifficulty('dificil')">Difícil</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-2">
+                                <i class="bi bi-graph-up me-2 text-success"></i>Tu progreso
+                            </h6>
+                            <div class="d-flex justify-content-between mb-1">
+                                <small class="text-muted">Ejercicios completados</small>
+                                <small class="fw-bold" id="completedCount">{{ progress.exercises_completed if progress else 0 }}/100</small>
+                            </div>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-success" 
+                                     style="width: {{ (progress.exercises_completed / 100 * 100) if progress else 0 }}%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">Precisión</small>
+                                <small class="fw-bold text-primary">{{ "%.1f"|format(progress.get_accuracy()) if progress else 0 }}%</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Área del ejercicio actual -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div id="exerciseContainer" class="card border-0 shadow-lg" style="display: none;">
+                <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0" id="exerciseTitle">Ejercicio de Transformación</h5>
+                    <button class="btn btn-sm btn-light" onclick="closeExercise()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <div class="card-body p-4">
+                    <div id="exerciseContent">
+                        <!-- Se llena dinámicamente con JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ejercicios recientes -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h5 class="fw-bold mb-0">
+                        <i class="bi bi-clock-history text-primary me-2"></i>
+                        Ejercicios recientes
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="px-4 py-3">Tipo</th>
+                                    <th class="py-3">Ejercicio</th>
+                                    <th class="py-3">Resultado</th>
+                                    <th class="py-3">Puntos</th>
+                                    <th class="py-3 px-4">Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentExercises">
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        Completa algunos ejercicios para ver tu historial
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.shadow-hover {
+    transition: all 0.3s ease;
+}
+
+.shadow-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important;
+}
+
+.exercise-icon {
+    transition: transform 0.3s ease;
+}
+
+.shadow-hover:hover .exercise-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.btn-group .btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+#exerciseContainer {
+    animation: slideInUp 0.5s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .btn-group {
+        flex-wrap: wrap;
+    }
+    
+    .btn-group .btn {
+        flex: 1 1 auto;
+        margin-bottom: 0.25rem;
+    }
+}
+</style>
+
+<script>
+let currentExercise = null;
+let currentType = '';
+
+function startExercise(type) {
+    currentType = type;
+    
+    fetch(`/api/ejercicio/${type}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                Notifications.toast('No hay ejercicios disponibles', 'warning');
+                return;
+            }
+            
+            currentExercise = data;
+            showExercise(data);
+        });
+}
+
+function showExercise(exercise) {
+    const container = document.getElementById('exerciseContainer');
+    const title = document.getElementById('exerciseTitle');
+    const content = document.getElementById('exerciseContent');
+    
+    const typeNames = {
+        'transformacion': 'Transformación',
+        'completar': 'Completar',
+        'identificar': 'Identificación'
+    };
+    
+    title.textContent = `Ejercicio de ${typeNames[currentType]}`;
+    
+    let html = `
+        <div class="exercise-phrase bg-light p-4 rounded-4 mb-4">
+            <p class="lead fw-bold mb-0 text-center">${exercise.frase}</p>
+        </div>
+    `;
+    
+    if (currentType === 'transformacion') {
+        html += `
+            <div class="mb-4">
+                <label class="form-label fw-bold">
+                    <i class="bi bi-pencil me-2 text-primary"></i>Tu versión asertiva:
+                </label>
+                <textarea class="form-control form-control-lg" id="userAnswer" rows="4" 
+                          placeholder="Escribe aquí tu versión de la frase..."></textarea>
+            </div>
+        `;
+    } else if (currentType === 'completar') {
+        html += `
+            <div class="mb-4">
+                <label class="form-label fw-bold">
+                    <i class="bi bi-pencil me-2 text-primary"></i>Completa la frase:
+                </label>
+                <input type="text" class="form-control form-control-lg" id="userAnswer" 
+                       placeholder="Escribe la palabra o frase que falta...">
+            </div>
+        `;
+    } else {
+        html += `
+            <div class="mb-4">
+                <label class="form-label fw-bold">
+                    <i class="bi bi-search me-2 text-primary"></i>Elemento problemático:
+                </label>
+                <input type="text" class="form-control form-control-lg" id="userAnswer" 
+                       placeholder="Ej: tono, generalización, etiqueta...">
+            </div>
+        `;
+    }
+    
+    html += `
+        <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-primary btn-lg px-5" onclick="checkAnswer(${exercise.id})">
+                <i class="bi bi-check-circle me-2"></i>Verificar
+            </button>
+            <div class="text-muted">
+                <i class="bi bi-star-fill text-warning me-1"></i>${exercise.puntos} puntos
+            </div>
+        </div>
+        <div id="feedbackArea" class="mt-4"></div>
+    `;
+    
+    content.innerHTML = html;
+    container.style.display = 'block';
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function checkAnswer(exerciseId) {
+    const answer = document.getElementById('userAnswer').value.trim();
+    const timeSpent = 30; // Simulado
+    
+    if (!answer) {
+        Notifications.toast('Por favor escribe una respuesta', 'warning');
+        return;
+    }
+    
+    fetch('/api/ejercicio/verificar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            exercise_id: exerciseId,
+            answer: answer,
+            time_spent: timeSpent
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const feedback = document.getElementById('feedbackArea');
+        
+        if (data.correct) {
+            feedback.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <strong>¡Correcto!</strong> +${data.points} puntos
+                    <div class="mt-2 text-warning">
+                        ${'★'.repeat(data.stars)}${'☆'.repeat(5-data.stars)}
+                    </div>
+                </div>
+            `;
+            
+            // Actualizar progreso
+            updateProgress();
+            
+            Notifications.toast(`¡Respuesta correcta! +${data.points} puntos`, 'success');
+        } else {
+            feedback.innerHTML = `
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong>Respuesta mejorable</strong>
+                    <p class="mt-2 mb-0">Sugerencia: ${currentExercise.respuesta}</p>
+                </div>
+            `;
+        }
+        
+        // Cerrar después de 3 segundos
+        setTimeout(closeExercise, 3000);
+    });
+}
+
+function closeExercise() {
+    document.getElementById('exerciseContainer').style.display = 'none';
+    document.getElementById('exerciseContent').innerHTML = '';
+}
+
+function filterDifficulty(difficulty) {
+    // Actualizar botones
+    document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Aquí iría la lógica de filtrado
+    Notifications.toast(`Filtrando por dificultad: ${difficulty}`, 'info');
+}
+
+function updateProgress() {
+    // Actualizar progreso (simulado)
+    const count = document.getElementById('completedCount');
+    const current = parseInt(count.textContent.split('/')[0]);
+    count.textContent = `${current + 1}/100`;
+}
+
+// Cargar ejercicios recientes (simulado)
+function loadRecentExercises() {
+    const tbody = document.getElementById('recentExercises');
+    // Aquí iría la carga real desde la API
+}
+
+// Inicializar
+document.addEventListener('DOMContentLoaded', function() {
+    loadRecentExercises();
+});
+</script>
+{% endblock %}

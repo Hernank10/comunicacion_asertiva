@@ -1,0 +1,544 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Logros - Comunicación Asertiva{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12 text-center" data-aos="fade-down">
+            <h1 class="display-5 fw-bold mb-3">
+                <i class="bi bi-trophy-fill text-warning me-3"></i>
+                Mis Logros
+            </h1>
+            <p class="lead text-muted">
+                Colecciona logros mientras mejoras tu comunicación asertiva
+            </p>
+        </div>
+    </div>
+
+    <!-- Estadísticas de logros -->
+    <div class="row mb-4 g-3">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card border-0 shadow-sm bg-primary bg-opacity-10">
+                <div class="card-body text-center">
+                    <i class="bi bi-trophy display-6 text-primary mb-2"></i>
+                    <h3 class="fw-bold mb-0">{{ unlocked|length }}</h3>
+                    <small class="text-muted">Logros desbloqueados</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="card border-0 shadow-sm bg-success bg-opacity-10">
+                <div class="card-body text-center">
+                    <i class="bi bi-star-fill display-6 text-success mb-2"></i>
+                    <h3 class="fw-bold mb-0">{{ unlocked|length * 50 }}</h3>
+                    <small class="text-muted">Puntos ganados</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="card border-0 shadow-sm bg-warning bg-opacity-10">
+                <div class="card-body text-center">
+                    <i class="bi bi-bar-chart display-6 text-warning mb-2"></i>
+                    <h3 class="fw-bold mb-0">{{ (unlocked|length / 15 * 100)|round|int }}%</h3>
+                    <small class="text-muted">Completado</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logros desbloqueados -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h4 class="fw-bold mb-0">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Logros Desbloqueados
+                        <span class="badge bg-success ms-2">{{ unlocked|length }}</span>
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    {% if unlocked %}
+                    <div class="row g-4">
+                        {% for item in unlocked %}
+                        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ loop.index * 50 }}">
+                            <div class="card achievement-card unlocked h-100 border-0 shadow-hover">
+                                <div class="card-body text-center p-4">
+                                    <div class="achievement-icon mb-3">
+                                        <i class="bi {{ item.achievement.icon }} display-3 text-{{ item.achievement.badge_color }}"></i>
+                                    </div>
+                                    <h5 class="fw-bold mb-2">{{ item.achievement.name }}</h5>
+                                    <p class="text-muted small mb-3">{{ item.achievement.description }}</p>
+                                    
+                                    <!-- Fecha de desbloqueo -->
+                                    <div class="d-flex align-items-center justify-content-center mb-2">
+                                        <i class="bi bi-calendar-check me-2 text-primary"></i>
+                                        <small class="text-muted">{{ item.unlocked_at.strftime('%d/%m/%Y') }}</small>
+                                    </div>
+                                    
+                                    <!-- Recompensas -->
+                                    <div class="d-flex justify-content-center gap-2 mt-2">
+                                        <span class="badge bg-primary">
+                                            <i class="bi bi-trophy me-1"></i>{{ item.achievement.reward_points }} pts
+                                        </span>
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="bi bi-star-fill me-1"></i>{{ item.achievement.reward_stars }} estrellas
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Badge de color -->
+                                    <div class="achievement-badge mt-3">
+                                        <span class="badge bg-{{ item.achievement.badge_color }} text-white">
+                                            {{ item.achievement.badge_color|capitalize }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-trophy display-1 text-muted mb-3"></i>
+                        <h5 class="text-muted mb-3">Aún no has desbloqueado logros</h5>
+                        <p class="mb-4">¡Sigue practicando para ganar tus primeros logros!</p>
+                        <a href="{{ url_for('ejercicios') }}" class="btn btn-primary">
+                            <i class="bi bi-pencil-square me-2"></i>Comenzar a practicar
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Próximos logros -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h4 class="fw-bold mb-0">
+                        <i class="bi bi-hourglass-split text-warning me-2"></i>
+                        Próximos Logros
+                        <span class="badge bg-warning ms-2">{{ locked|length }}</span>
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        {% for item in locked %}
+                        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="{{ loop.index * 30 }}">
+                            <div class="card achievement-card locked h-100 border-0">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <!-- Icono del logro (gris) -->
+                                        <div class="achievement-icon-locked">
+                                            <i class="bi {{ item.achievement.icon }} display-4 text-secondary"></i>
+                                        </div>
+                                        
+                                        <!-- Información del logro -->
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="fw-bold mb-0">{{ item.achievement.name }}</h6>
+                                                <span class="badge bg-secondary">{{ item.progress }}%</span>
+                                            </div>
+                                            <p class="small text-muted mb-2">{{ item.achievement.description }}</p>
+                                            
+                                            <!-- Barra de progreso -->
+                                            <div class="progress mb-2" style="height: 6px;">
+                                                <div class="progress-bar bg-{{ item.achievement.badge_color }}" 
+                                                     style="width: {{ item.progress }}%"></div>
+                                            </div>
+                                            
+                                            <!-- Requisitos específicos -->
+                                            <div class="d-flex flex-wrap gap-2 mt-2">
+                                                {% if item.achievement.points_required > 0 %}
+                                                <small class="text-muted">
+                                                    <i class="bi bi-trophy me-1"></i>
+                                                    {{ current_user.total_score }}/{{ item.achievement.points_required }} pts
+                                                </small>
+                                                {% endif %}
+                                                
+                                                {% if item.achievement.exercises_required > 0 %}
+                                                <small class="text-muted">
+                                                    <i class="bi bi-pencil-square me-1"></i>
+                                                    {{ current_user.progress.exercises_correct }}/{{ item.achievement.exercises_required }} ej.
+                                                </small>
+                                                {% endif %}
+                                                
+                                                {% if item.achievement.streak_required > 0 %}
+                                                <small class="text-muted">
+                                                    <i class="bi bi-fire me-1"></i>
+                                                    {{ current_user.current_streak }}/{{ item.achievement.streak_required }} días
+                                                </small>
+                                                {% endif %}
+                                                
+                                                {% if item.achievement.custom_exercises_required > 0 %}
+                                                <small class="text-muted">
+                                                    <i class="bi bi-pencil me-1"></i>
+                                                    {{ current_user.custom_exercises|length }}/{{ item.achievement.custom_exercises_required }} creados
+                                                </small>
+                                                {% endif %}
+                                                
+                                                {% if item.achievement.flashcards_mastered_required > 0 %}
+                                                <small class="text-muted">
+                                                    <i class="bi bi-card-list me-1"></i>
+                                                    {{ current_user.progress.flashcards_mastered }}/{{ item.achievement.flashcards_mastered_required }} flashcards
+                                                </small>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <!-- Recompensas al desbloquear -->
+                                            <div class="d-flex gap-2 mt-3">
+                                                <span class="badge bg-light text-dark">
+                                                    <i class="bi bi-trophy me-1 text-primary"></i>+{{ item.achievement.reward_points }}
+                                                </span>
+                                                <span class="badge bg-light text-dark">
+                                                    <i class="bi bi-star-fill me-1 text-warning"></i>+{{ item.achievement.reward_stars }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logros especiales y categorías -->
+    <div class="row">
+        <div class="col-md-6 mb-4" data-aos="fade-right">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h5 class="fw-bold mb-0">
+                        <i class="bi bi-pie-chart text-primary me-2"></i>
+                        Logros por Categoría
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span><i class="bi bi-star me-2 text-warning"></i>Puntos</span>
+                            <span class="fw-bold">{{ unlocked|selectattr('achievement.category', 'equalto', 'puntos')|list|length }}/4</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-warning" 
+                                 style="width: {{ (unlocked|selectattr('achievement.category', 'equalto', 'puntos')|list|length / 4 * 100) }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span><i class="bi bi-pencil-square me-2 text-success"></i>Ejercicios</span>
+                            <span class="fw-bold">{{ unlocked|selectattr('achievement.category', 'equalto', 'ejercicios')|list|length }}/3</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" 
+                                 style="width: {{ (unlocked|selectattr('achievement.category', 'equalto', 'ejercicios')|list|length / 3 * 100) }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span><i class="bi bi-fire me-2 text-danger"></i>Racha</span>
+                            <span class="fw-bold">{{ unlocked|selectattr('achievement.category', 'equalto', 'racha')|list|length }}/2</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-danger" 
+                                 style="width: {{ (unlocked|selectattr('achievement.category', 'equalto', 'racha')|list|length / 2 * 100) }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span><i class="bi bi-card-list me-2 text-info"></i>Flashcards</span>
+                            <span class="fw-bold">{{ unlocked|selectattr('achievement.category', 'equalto', 'flashcards')|list|length }}/2</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-info" 
+                                 style="width: {{ (unlocked|selectattr('achievement.category', 'equalto', 'flashcards')|list|length / 2 * 100) }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span><i class="bi bi-pencil me-2 text-secondary"></i>Creador</span>
+                            <span class="fw-bold">{{ unlocked|selectattr('achievement.category', 'equalto', 'creador')|list|length }}/2</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-secondary" 
+                                 style="width: {{ (unlocked|selectattr('achievement.category', 'equalto', 'creador')|list|length / 2 * 100) }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4" data-aos="fade-left">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h5 class="fw-bold mb-0">
+                        <i class="bi bi-lightbulb text-warning me-2"></i>
+                        Consejos para más logros
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="tip-item d-flex align-items-start mb-3">
+                        <div class="tip-number bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" 
+                             style="width: 30px; height: 30px; flex-shrink: 0;">1</div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Practica diariamente</h6>
+                            <p class="small text-muted mb-0">Mantén una racha de 7 días para desbloquear logros de racha</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item d-flex align-items-start mb-3">
+                        <div class="tip-number bg-success text-white rounded-circle me-3 d-flex align-items-center justify-content-center" 
+                             style="width: 30px; height: 30px; flex-shrink: 0;">2</div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Completa ejercicios de todos los tipos</h6>
+                            <p class="small text-muted mb-0">Transformación, completar e identificación</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item d-flex align-items-start mb-3">
+                        <div class="tip-number bg-warning text-dark rounded-circle me-3 d-flex align-items-center justify-content-center" 
+                             style="width: 30px; height: 30px; flex-shrink: 0;">3</div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Crea ejercicios personalizados</h6>
+                            <p class="small text-muted mb-0">Comparte tu creatividad con la comunidad</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item d-flex align-items-start mb-3">
+                        <div class="tip-number bg-info text-white rounded-circle me-3 d-flex align-items-center justify-content-center" 
+                             style="width: 30px; height: 30px; flex-shrink: 0;">4</div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Estudia flashcards</h6>
+                            <p class="small text-muted mb-0">Domina conceptos clave para desbloquear logros específicos</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item d-flex align-items-start">
+                        <div class="tip-number bg-danger text-white rounded-circle me-3 d-flex align-items-center justify-content-center" 
+                             style="width: 30px; height: 30px; flex-shrink: 0;">5</div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Obtén 5 estrellas en ejercicios</h6>
+                            <p class="small text-muted mb-0">La calidad también cuenta para ciertos logros</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logros secretos/ocultos -->
+    <div class="row">
+        <div class="col-12" data-aos="fade-up">
+            <div class="card border-0 shadow-sm bg-dark text-white">
+                <div class="card-body p-4 text-center">
+                    <i class="bi bi-question-circle display-1 mb-3 opacity-50"></i>
+                    <h4 class="fw-bold mb-3">¿Logros Secretos?</h4>
+                    <p class="mb-4 opacity-75">
+                        Hay logros ocultos que descubrirás al alcanzar hitos especiales.
+                        ¡Sigue practicando para encontrarlos!
+                    </p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <span class="badge bg-secondary p-2">???</span>
+                        <span class="badge bg-secondary p-2">???</span>
+                        <span class="badge bg-secondary p-2">???</span>
+                        <span class="badge bg-secondary p-2">???</span>
+                        <span class="badge bg-secondary p-2">???</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.achievement-card {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.achievement-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important;
+}
+
+.achievement-card.unlocked {
+    background: linear-gradient(135deg, #fff, #fef9e7);
+    border-left: 4px solid #f1c40f;
+}
+
+.achievement-card.locked {
+    background: #f8f9fa;
+    opacity: 0.9;
+}
+
+.achievement-icon {
+    transition: transform 0.3s ease;
+}
+
+.achievement-card:hover .achievement-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.achievement-icon-locked {
+    opacity: 0.5;
+    filter: grayscale(1);
+}
+
+.achievement-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.tip-number {
+    font-weight: bold;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Colores de badges personalizados */
+.bg-bronze { background: linear-gradient(135deg, #cd7f32, #b87333); }
+.bg-silver { background: linear-gradient(135deg, #c0c0c0, #a9a9a9); }
+.bg-gold { background: linear-gradient(135deg, #ffd700, #daa520); }
+
+.text-bronze { color: #cd7f32; }
+.text-silver { color: #c0c0c0; }
+.text-gold { color: #ffd700; }
+
+/* Animaciones */
+@keyframes shine {
+    0% { left: -100%; }
+    20% { left: 100%; }
+}
+
+.achievement-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.7s ease;
+}
+
+.achievement-card:hover::after {
+    left: 150%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .display-5 {
+        font-size: 2rem;
+    }
+    
+    .achievement-icon {
+        font-size: 2.5rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .achievement-card .d-flex {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .achievement-icon-locked {
+        margin-bottom: 1rem;
+    }
+}
+</style>
+
+<script>
+// Animar barras de progreso al hacer scroll
+document.addEventListener('DOMContentLoaded', function() {
+    const progressBars = document.querySelectorAll('.progress-bar');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const bar = entry.target;
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            }
+        });
+    });
+    
+    progressBars.forEach(bar => observer.observe(bar));
+});
+
+// Compartir logros en redes
+function shareAchievement(name, icon) {
+    const text = `¡He desbloqueado el logro "${name}" en ComunicaPro! 🏆`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Mi nuevo logro',
+            text: text,
+            url: window.location.href
+        }).catch(() => {
+            // Fallback a copiar al portapapeles
+            copyToClipboard(text);
+        });
+    } else {
+        copyToClipboard(text);
+    }
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        Notifications.toast('Texto copiado al portapapeles', 'success');
+    });
+}
+
+// Mostrar detalles del logro
+function showAchievementDetails(achievement) {
+    Notifications.toast(`${achievement.name}: ${achievement.description}`, 'info');
+}
+
+// Filtrar logros por categoría
+function filterAchievements(category) {
+    const cards = document.querySelectorAll('.achievement-card');
+    cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+// Calcular próximo logro
+function getNextAchievement() {
+    const locked = {{ locked|tojson }};
+    if (locked.length === 0) return null;
+    
+    // Ordenar por progreso descendente
+    locked.sort((a, b) => b.progress - a.progress);
+    return locked[0];
+}
+
+// Mostrar notificación cuando se está cerca de un logro
+document.addEventListener('DOMContentLoaded', function() {
+    const next = getNextAchievement();
+    if (next && next.progress >= 75) {
+        Notifications.toast(`¡Estás muy cerca de desbloquear "${next.achievement.name}"!`, 'warning');
+    }
+});
+</script>
+{% endblock %}
